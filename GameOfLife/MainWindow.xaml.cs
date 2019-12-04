@@ -83,6 +83,21 @@ namespace GameOfLife
             isDown = true;
         }
 
+        private void ResetClick(object sender, RoutedEventArgs e)
+        {
+            var depObj = myGrid;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                if (child is Rectangle)
+                {
+                    Console.WriteLine("ici");
+                    Rectangle rect = (Rectangle)child;
+                    rect.Fill= new SolidColorBrush(System.Windows.Media.Colors.Turquoise);
+                }
+            }
+        }
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
             isDown = false;

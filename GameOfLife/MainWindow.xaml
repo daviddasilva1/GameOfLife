@@ -7,7 +7,14 @@
         mc:Ignorable="d"
            WindowStartupLocation="CenterScreen" WindowState="Maximized"
     Title="MainWindow" Height="800" Width="800">
-    <Grid Visibility="Visible" Name="myGrid" MouseMove="Grid_MouseMove" MouseLeftButtonUp="Grid_MouseUp" MouseLeftButtonDown="Grid_MouseDown" Height="700" VerticalAlignment="Top">
+    <StackPanel>
+        <Grid Visibility="Visible" Name="myGrid" MouseMove="Grid_MouseMove" MouseLeftButtonUp="Grid_MouseUp" MouseLeftButtonDown="Grid_MouseDown" Height="700" VerticalAlignment="Top">
 
-    </Grid>
+        </Grid>
+        <Label Width="150" HorizontalAlignment="Left">Nombre de lignes</Label>
+        <Slider Maximum="50" TickFrequency="5" Width="200" HorizontalAlignment="Left"></Slider>
+        <Button x:Name="Reset" Content="Button" HorizontalAlignment="Left" Click="ResetClick" VerticalAlignment="Top" Width="75" Canvas.Left="200" Canvas.Top="10"/>
+
+    </StackPanel>
+
 </Window>
