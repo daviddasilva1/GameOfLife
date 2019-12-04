@@ -20,6 +20,8 @@ namespace GameOfLife
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool isDown = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,8 +49,6 @@ namespace GameOfLife
 
             for (int i=0;i< nbOfColumn; i++)
             {
-
-
                 for (int j=0;j< nbOfRowCell; j++)
                 {
 
@@ -62,27 +62,50 @@ namespace GameOfLife
 
                     myGrid.Children.Add(rectangle);
                 }
-
             }
-
-
-
-
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            string selectedRect;
+            //string selectedRect;
             if (e.OriginalSource is Rectangle)
             {
                 Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
 
-                var mouseWasDownOn = e.Source as FrameworkElement;
-                string elementName = mouseWasDownOn.Name;
-                selectedRect = elementName.ToString();
-                MessageBox.Show(selectedRect.ToString());
-                
+                //var mouseWasDownOn = e.Source as FrameworkElement;
+                //string elementName = mouseWasDownOn.Name;
+                //selectedRect = elementName.ToString();
+                ClickedRectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Green);
+                // MessageBox.Show(selectedRect.ToString());
+
             }
+
+            isDown = true;
+        }
+
+        private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            isDown = false;
+        }
+
+        private void Grid_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(isDown)
+            {
+                //string selectedRect;
+                if (e.OriginalSource is Rectangle)
+                {
+                    Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
+
+                    //var mouseWasDownOn = e.Source as FrameworkElement;
+                    //string elementName = mouseWasDownOn.Name;
+                    //selectedRect = elementName.ToString();
+                    ClickedRectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Green);
+                    // MessageBox.Show(selectedRect.ToString());
+
+                }
+            }
+
         }
 
     }
