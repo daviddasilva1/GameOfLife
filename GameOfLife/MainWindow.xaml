@@ -5,56 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameOfLife"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid Visibility="Visible" Name="myGrid" MouseLeftButtonDown="Grid_MouseDown">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition /> 
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition Height="100"/>
+           WindowStartupLocation="CenterScreen" WindowState="Maximized"
+    Title="MainWindow" Height="450" Width="800">
+    <Grid Visibility="Visible" Name="myGrid" MouseLeftButtonDown="Grid_MouseDown" Height="700" VerticalAlignment="Top">
 
-        </Grid.RowDefinitions>
-        <Button Grid.Column="20" Grid.Row="20" Command="{Binding ResetCommand}" Width="Auto">Reset</Button>
-        <Button Grid.Column="18" Grid.Row="20" Command="{Binding EvolveCommand}" Width="Auto">Evolve</Button>
-        <Grid DockPanel.Dock="Bottom" Name="UniverseGrid" ShowGridLines="True" Height="Auto"></Grid>
     </Grid>
 </Window>

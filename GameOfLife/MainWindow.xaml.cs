@@ -24,15 +24,35 @@ namespace GameOfLife
         {
             InitializeComponent();
 
-
-            for (int i=0;i<20;i++)
+            double nbOfRowCell = 40;
+            double cellSize = 700 / nbOfRowCell;
+            for(int i=0;i< nbOfRowCell; i++)
             {
-                for(int j=0;j<20;j++)
+                RowDefinition gridRow = new RowDefinition();
+
+                gridRow.Height = new GridLength(cellSize);
+
+                myGrid.RowDefinitions.Add(gridRow);
+
+            }
+            int nbOfColumn = Convert.ToInt32(SystemParameters.WorkArea.Width / cellSize);
+            for(int i=0;i< nbOfColumn; i++)
+            {
+                ColumnDefinition gridCol = new ColumnDefinition();
+                gridCol.Width = new GridLength(cellSize);
+
+                myGrid.ColumnDefinitions.Add(gridCol);
+            }
+
+
+            for (int i=0;i< nbOfColumn; i++)
+            {
+
+
+                for (int j=0;j< nbOfRowCell; j++)
                 {
 
-
                     System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
-
                     rectangle.Name = "rectCol" + i.ToString() + "Row" + j.ToString();
                     rectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Turquoise);
                     rectangle.Stroke = new SolidColorBrush(System.Windows.Media.Colors.Black);
