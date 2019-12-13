@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -21,14 +22,21 @@ namespace GameOfLife
     public partial class MainWindow : Window
     {
         private bool isDown = false;
+        double nbOfRowCell = 40;
+
 
         public MainWindow()
         {
             InitializeComponent();
+            DrawGrid();
 
-            double nbOfRowCell = 40;
+        }
+
+        private void DrawGrid()
+        {
+
             double cellSize = 700 / nbOfRowCell;
-            for(int i=0;i< nbOfRowCell; i++)
+            for (int i = 0; i < nbOfRowCell; i++)
             {
                 RowDefinition gridRow = new RowDefinition();
 
@@ -38,7 +46,7 @@ namespace GameOfLife
 
             }
             int nbOfColumn = Convert.ToInt32(SystemParameters.WorkArea.Width / cellSize);
-            for(int i=0;i< nbOfColumn; i++)
+            for (int i = 0; i < nbOfColumn; i++)
             {
                 ColumnDefinition gridCol = new ColumnDefinition();
                 gridCol.Width = new GridLength(cellSize);
@@ -47,9 +55,9 @@ namespace GameOfLife
             }
 
 
-            for (int i=0;i< nbOfColumn; i++)
+            for (int i = 0; i < nbOfColumn; i++)
             {
-                for (int j=0;j< nbOfRowCell; j++)
+                for (int j = 0; j < nbOfRowCell; j++)
                 {
 
                     System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
@@ -92,7 +100,6 @@ namespace GameOfLife
                 DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
                 if (child is Rectangle)
                 {
-                    Console.WriteLine("ici");
                     Rectangle rect = (Rectangle)child;
                     rect.Fill= new SolidColorBrush(System.Windows.Media.Colors.Turquoise);
                 }
@@ -120,6 +127,18 @@ namespace GameOfLife
 
                 }
             }
+
+        }
+
+        private void onDragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            
+                var slider = sender as Slider;
+                double value = slider.Value;
+            nbOfRowCell = value;
+            myGrid.ColumnDefinitions.Clear();
+            myGrid.RowDefinitions.Clear();
+            DrawGrid();
 
         }
 
