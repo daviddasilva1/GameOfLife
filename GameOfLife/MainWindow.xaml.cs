@@ -131,12 +131,25 @@ namespace GameOfLife
             }
         }
 
-        private void StartClick(object sender, RoutedEventArgs e)
+        private void SliderSpeedValueChanged(object sender, RoutedEventArgs e)
         {
-            evaluate();
+            lblSpeed.Content = "Vitesse de cycle : " + (int)sliderSpeed.Value + "ms";
         }
 
-        private void evaluate()
+        private void StartClick(object sender, RoutedEventArgs e)
+        {
+            startGame();
+        }
+
+        private void startGame()
+        {
+            var dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(evaluate);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)sliderSpeed.Value);
+            dispatcherTimer.Start();
+        }
+
+        private void evaluate(object sender, EventArgs e)
         {
             foreach (Cell cell in cells)
             {
@@ -147,8 +160,6 @@ namespace GameOfLife
             {
                 cell.apply();
             }
-
-
         }
 
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
