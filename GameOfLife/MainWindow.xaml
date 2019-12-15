@@ -11,10 +11,25 @@
         <Grid Visibility="Visible" Name="myGrid" MouseMove="Grid_MouseMove" MouseLeftButtonUp="Grid_MouseUp" MouseLeftButtonDown="Grid_MouseDown" Height="700" VerticalAlignment="Top">
 
         </Grid>
-        <Label Width="150" HorizontalAlignment="Left">Nombre de lignes</Label>
-        <Slider Thumb.DragCompleted="onDragCompleted" Minimum ="20" Maximum="40" TickFrequency="5" Width="200" HorizontalAlignment="Left"></Slider>
-        <Button x:Name="Reset" Content="Reset" HorizontalAlignment="Left" Click="ResetClick" VerticalAlignment="Top" Width="75" Canvas.Left="200" Canvas.Top="10"/>
-        <Button x:Name="Start" Content="Start" HorizontalAlignment="Left" Click="StartClick" VerticalAlignment="Top" Width="75" Canvas.Left="200" Canvas.Top="10"/>
+        <Grid Height="100">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition  />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition  />
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" Width="150" >Nombre de lignes</Label>
+            <Slider Grid.Column="0" Grid.Row="1" Thumb.DragCompleted="onDragCompleted" Minimum ="40" Maximum="80" TickFrequency="5" Width="200" ></Slider>
+            <Button Grid.Column="2" Grid.Row="1" x:Name="Reset" Content="Reset"  Click="ResetClick"  Width="75"  />
+            <Button Grid.Column="2" Grid.Row="1" x:Name="Start" Content="Start"  Click="StartClick" HorizontalAlignment="Left"  Width="75" />
+            <Label Name="lblSpeed" Grid.Column="1" Grid.Row="0" Width="150" HorizontalAlignment="Left">vitesse de cycle en ms</Label>
+            <Slider Name="sliderSpeed" Grid.Column="1" Grid.Row="1" ValueChanged="SliderSpeedValueChanged" Minimum ="100" Maximum="2000" TickFrequency="50" Width="200"></Slider>
+        </Grid>
 
     </StackPanel>
 
