@@ -23,7 +23,10 @@ namespace GameOfLife
     {
         private bool isDown = false;
         private Cell[,] cells;
-        private int nbOfRowCell = 0;
+        private int nbOfRowCell = 20;
+
+        private HashSet<Tuple<int, int>> tupleList = new HashSet<Tuple<int, int>>();
+
 
         public MainWindow()
         {
@@ -34,7 +37,6 @@ namespace GameOfLife
 
         private void DrawGrid()
         {
-            nbOfRowCell = 20;
             double cellSize = 700 / nbOfRowCell;
             for (int i = 0; i < nbOfRowCell; i++)
             {
@@ -63,6 +65,20 @@ namespace GameOfLife
                     System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
                     rectangle.Name = "rectCol" + i.ToString() + "Row" + j.ToString();
                     rectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Turquoise);
+                    HashSet<Tuple<int, int>>.Enumerator e = tupleList.GetEnumerator();
+                    while (e.MoveNext())
+                    {
+                        Console.WriteLine(e.Current.Item1 + ";" + e.Current.Item2);
+                        if (e.Current.Item1 == i && e.Current.Item2 == j)
+                        {
+                            Console.WriteLine("ici");
+                            rectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Green);
+
+                        }
+
+
+
+                    }
                     rectangle.Stroke = new SolidColorBrush(System.Windows.Media.Colors.Black);
 
                     Grid.SetColumn(rectangle, i);
@@ -90,6 +106,8 @@ namespace GameOfLife
                 int x = Grid.GetColumn(ClickedRectangle);
                 int y = Grid.GetRow(ClickedRectangle);
                 cells[x, y].State = State.ALIVE;
+                Tuple<int, int> tuple = new Tuple<int, int>(x, y);
+                tupleList.Add(tuple);
 
             }
 
@@ -98,6 +116,8 @@ namespace GameOfLife
 
         private void ResetClick(object sender, RoutedEventArgs e)
         {
+            tupleList.Clear();
+
             var depObj = myGrid;
 
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
@@ -153,6 +173,8 @@ namespace GameOfLife
                     int x = Grid.GetColumn(ClickedRectangle);
                     int y = Grid.GetRow(ClickedRectangle);
                     cells[x, y].State = State.ALIVE;
+                    Tuple<int, int> tuple = new Tuple<int, int>(x, y);
+                    tupleList.Add(tuple);
 
                 }
             }
