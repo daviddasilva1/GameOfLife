@@ -12,8 +12,9 @@
 
         </Grid>
         <Label Width="150" HorizontalAlignment="Left">Nombre de lignes</Label>
-        <Slider Thumb.DragCompleted="onDragCompleted" Minimum ="20" Maximum="50" TickFrequency="5" Width="200" HorizontalAlignment="Left"></Slider>
+        <Slider Thumb.DragCompleted="onDragCompleted" Minimum ="40" Maximum="80" TickFrequency="5" Width="200" HorizontalAlignment="Left"></Slider>
         <Button x:Name="Reset" Content="Reset" HorizontalAlignment="Left" Click="ResetClick" VerticalAlignment="Top" Width="75" Canvas.Left="200" Canvas.Top="10"/>
+        <Button x:Name="Start" Content="Start" HorizontalAlignment="Left" Click="StartClick" VerticalAlignment="Top" Width="75" Canvas.Left="200" Canvas.Top="10"/>
 
     </StackPanel>
 

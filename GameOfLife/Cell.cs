@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace GameOfLife
 {
@@ -14,13 +16,19 @@ namespace GameOfLife
         public int Y { get => y; set => y = value; }
         public int X { get => x; set => x = value; }
         public State State { get => state; set => state = value; }
+        public State NextState { get => nextState; set => nextState = value; }
+
 
         private State state;
+        private State nextState;
 
-        public Cell(int x,int y, State state=State.DEAD)
+        private Rectangle rectangle;
+
+        public Cell(int x,int y,Rectangle rectangle, State state=State.DEAD)
         {
             X = x;
             Y = y;
+            this.rectangle = rectangle;
             State = state;
         }
 
@@ -33,24 +41,43 @@ namespace GameOfLife
             int nbOfAliveNeighbour = 0;
             if (X - 1 < 0)
                 startX = X;
-            if (X + 1 > grid.GetLength(0))
+            if (X + 1 > grid.GetLength(0)-1)
                 endX = X;
             if (Y - 1 < 0)
                 startY = Y;
-            if (Y + 1 > grid.GetLength(1))
+            if (Y + 1 > grid.GetLength(1)-1)
                 endY = Y;
 
             for(int i = startX;i<=endX;i++)
             {
-                for(int j = startY;j<endY;j++)
+                for(int j = startY;j<=endY;j++)
                 {
-                    if (i != X && j != Y)
+                    if (!(i == X && j == Y))
                         if (grid[i, j].State == State.ALIVE)
                             nbOfAliveNeighbour++;
                         
                 }
             }
             return nbOfAliveNeighbour;
+        }
+
+        public void prepare(Cell[,] grid)
+        {
+            if (getNbOfAliveNeighbour(grid) == 3)
+                nextState = State.ALIVE;
+            else if (getNbOfAliveNeighbour(grid) == 2)
+                nextState = State;
+            else
+                nextState = State.DEAD;
+        }
+
+        public void apply()
+        {
+            state = nextState;
+            if(state == State.ALIVE)
+                rectangle.Fill = new SolidColorBrush(Colors.Green);
+            else
+                rectangle.Fill = new SolidColorBrush(Colors.White);
         }
 
     }

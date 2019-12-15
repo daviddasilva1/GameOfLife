@@ -22,8 +22,8 @@ namespace GameOfLife
     public partial class MainWindow : Window
     {
         private bool isDown = false;
-        double nbOfRowCell = 40;
-
+        private Cell[,] cells;
+        private int nbOfRowCell = 0;
 
         public MainWindow()
         {
@@ -34,7 +34,7 @@ namespace GameOfLife
 
         private void DrawGrid()
         {
-
+            nbOfRowCell = 20;
             double cellSize = 700 / nbOfRowCell;
             for (int i = 0; i < nbOfRowCell; i++)
             {
@@ -53,7 +53,7 @@ namespace GameOfLife
 
                 myGrid.ColumnDefinitions.Add(gridCol);
             }
-
+            cells = new Cell[nbOfColumn, nbOfRowCell];
 
             for (int i = 0; i < nbOfColumn; i++)
             {
@@ -69,6 +69,8 @@ namespace GameOfLife
                     Grid.SetRow(rectangle, j);
 
                     myGrid.Children.Add(rectangle);
+                    cells[i, j] = new Cell(i, j, rectangle);
+
                 }
             }
         }
@@ -85,6 +87,9 @@ namespace GameOfLife
                 //selectedRect = elementName.ToString();
                 ClickedRectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Green);
                 // MessageBox.Show(selectedRect.ToString());
+                int x = Grid.GetColumn(ClickedRectangle);
+                int y = Grid.GetRow(ClickedRectangle);
+                cells[x, y].State = State.ALIVE;
 
             }
 
@@ -105,6 +110,27 @@ namespace GameOfLife
                 }
             }
         }
+
+        private void StartClick(object sender, RoutedEventArgs e)
+        {
+            evaluate();
+        }
+
+        private void evaluate()
+        {
+            foreach (Cell cell in cells)
+            {
+                cell.prepare(cells);
+            }
+
+            foreach (Cell cell in cells)
+            {
+                cell.apply();
+            }
+
+
+        }
+
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
             isDown = false;
@@ -124,6 +150,9 @@ namespace GameOfLife
                     //selectedRect = elementName.ToString();
                     ClickedRectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Green);
                     // MessageBox.Show(selectedRect.ToString());
+                    int x = Grid.GetColumn(ClickedRectangle);
+                    int y = Grid.GetRow(ClickedRectangle);
+                    cells[x, y].State = State.ALIVE;
 
                 }
             }
@@ -133,9 +162,9 @@ namespace GameOfLife
         private void onDragCompleted(object sender, DragCompletedEventArgs e)
         {
             
-                var slider = sender as Slider;
-                double value = slider.Value;
-            nbOfRowCell = value;
+            var slider = sender as Slider;
+            double value = slider.Value;
+            nbOfRowCell = (int)value;
             myGrid.ColumnDefinitions.Clear();
             myGrid.RowDefinitions.Clear();
             DrawGrid();
