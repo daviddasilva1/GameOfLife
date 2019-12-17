@@ -191,6 +191,34 @@ namespace GameOfLife
             }
             else
             {
+                int x = nbOfColumnCell / 2 , y = nbOfRowCell / 2;
+                int xSign = 1;
+                int ySign = 1;
+                for(int i=0;i<4;i++)
+                {
+                    
+                    positionList.Add(new Tuple<int, int>(x + xSign* 2, y - ySign*1));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 1));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 1));
+
+                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 2));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 3));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 4));
+
+                    positionList.Add(new Tuple<int, int>(x + xSign * 2, y - ySign * 6));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 6));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 6));
+
+                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 2));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 3));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 4));
+                    if (i == 0)
+                        xSign = -1;
+                    else if (i == 1)
+                        ySign = -1;
+                    else if (i == 2)
+                        xSign = 1;
+                }
 
             }
 
@@ -200,16 +228,6 @@ namespace GameOfLife
                 cells[cell.Item1,cell.Item2].rectangle.Fill = new SolidColorBrush(Colors.Green);
                 cells[cell.Item1, cell.Item2].State = State.ALIVE;
             }
-
-        }
-
-        private void setTemplate2(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void setTemplate3(object sender, RoutedEventArgs e)
-        {
 
         }
 
