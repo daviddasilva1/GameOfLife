@@ -134,11 +134,62 @@ namespace GameOfLife
             nbIterations = 0;
             updateStats();
             resetCells();
+            SetEnableStart();
+            SetEnablePattern();
+
+
+
+
+        }
+
+        private void SetEnableStart()
+        {
+            if(Start.IsEnabled)
+            {
+                sliderResize.IsEnabled = false;
+                sliderSpeed.IsEnabled = false;
+                Start.IsEnabled = false;
+                Reset.IsEnabled = true;
+                Pause.IsEnabled = true;
+
+            }
+            else
+            {
+                sliderResize.IsEnabled = true;
+                sliderSpeed.IsEnabled = true;
+                Start.IsEnabled = true;
+                Reset.IsEnabled = false;
+                Pause.IsEnabled = false;
+            }
+        }
+
+        private void SetEnablePattern()
+        {
+            if(pattern1.IsEnabled)
+            {
+                pattern1.IsEnabled = false;
+                pattern2.IsEnabled = false;
+                pattern3.IsEnabled = false;
+            }
+            else
+            {
+                pattern1.IsEnabled = true;
+                pattern2.IsEnabled = true;
+                pattern3.IsEnabled = true;
+            }
+        }
+
+        private void PauseClick(object sender, RoutedEventArgs e)
+        {
+            dispatcherTimer.Stop();
+            Pause.IsEnabled = false;
+            Start.IsEnabled = true;
+            sliderSpeed.IsEnabled = false;
         }
 
         public void resetCells()
         {
-            var color = new SolidColorBrush(Colors.White);
+            var color = new SolidColorBrush(Colors.Turquoise);
             foreach (Cell cell in cells)
             {
                 cell.rectangle.Fill = color;
@@ -155,6 +206,9 @@ namespace GameOfLife
         private void StartClick(object sender, RoutedEventArgs e)
         {
             startGame();
+            SetEnableStart();
+            SetEnablePattern();
+
         }
 
 

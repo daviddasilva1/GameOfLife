@@ -77,7 +77,7 @@ namespace GameOfLife
             if(state == State.ALIVE)
                 rectangle.Fill = new SolidColorBrush(Colors.Green);
             else
-                rectangle.Fill = new SolidColorBrush(Colors.White);
+                rectangle.Fill = new SolidColorBrush(Colors.Turquoise);
         }
 
     }
