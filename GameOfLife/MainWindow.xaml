@@ -26,9 +26,9 @@
 
             <Label Grid.Column="0" Grid.Row="0" Width="150" >Nombre de lignes</Label>
             <Slider Grid.Column="0" Grid.Row="1" Thumb.DragCompleted="onDragCompleted" Minimum ="40" Maximum="80" TickFrequency="5" Width="200" ></Slider>
-            <Button Grid.Column="2" Grid.Row="0" x:Name="template1" Content="template1"  Click="setTemplate1" HorizontalAlignment="Left" Width="60"  />
-            <Button Grid.Column="2" Grid.Row="0" x:Name="template2" Content="template2"  Click="setTemplate2" HorizontalAlignment="Center" Width="60"  />
-            <Button Grid.Column="2" Grid.Row="0" x:Name="template3" Content="template3"  Click="setTemplate3" HorizontalAlignment="Right" Width="60"  />
+            <Button Grid.Column="2" Grid.Row="0" x:Name="template1" Content="template1"  Click="setTemplate" HorizontalAlignment="Left" Width="60"  />
+            <Button Grid.Column="2" Grid.Row="0" x:Name="template2" Content="template2"  Click="setTemplate" HorizontalAlignment="Center" Width="60"  />
+            <Button Grid.Column="2" Grid.Row="0" x:Name="template3" Content="template3"  Click="setTemplate" HorizontalAlignment="Right" Width="60"  />
 
             <Button Grid.Column="2" Grid.Row="1" x:Name="Reset" Content="Reset"  Click="ResetClick"  Width="75"  />
             <Button Grid.Column="2" Grid.Row="1" x:Name="Start" Content="Start"  Click="StartClick" HorizontalAlignment="Left"  Width="75" />
