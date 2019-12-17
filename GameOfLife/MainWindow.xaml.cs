@@ -160,12 +160,12 @@ namespace GameOfLife
 
 
         /// eventuellement faire une seule méthode pour les 3 template en passant le numéro du template en args
-        private void setTemplate(object sender, RoutedEventArgs e)
+        private void setPattern(object sender, RoutedEventArgs e)
         {
              // Top left position of the template
             List<Tuple<int,int>> positionList = new List<Tuple<int, int>>();
             Button btn = (Button)sender;
-            if(btn.Name == "template1")
+            if(btn.Name == "pattern1")
             {
                 int x = 0, y = 0;
                 positionList.Add(new Tuple<int, int>(x, y + 2));
@@ -174,7 +174,7 @@ namespace GameOfLife
                 positionList.Add(new Tuple<int, int>(x + 1, y));
                 positionList.Add(new Tuple<int, int>(x + 2, y + 1));
             }
-            else if(btn.Name == "template2")
+            else if(btn.Name == "pattern2")
             {
                 int x = nbOfColumnCell/2-5, y = nbOfRowCell/2;
                 positionList.Add(new Tuple<int, int>(x, y));
