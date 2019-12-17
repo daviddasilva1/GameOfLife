@@ -16,19 +16,29 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition  />
+                <ColumnDefinition  />
+
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition  />
-                <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
             <Label Grid.Column="0" Grid.Row="0" Width="150" >Nombre de lignes</Label>
             <Slider Grid.Column="0" Grid.Row="1" Thumb.DragCompleted="onDragCompleted" Minimum ="40" Maximum="80" TickFrequency="5" Width="200" ></Slider>
+            <Button Grid.Column="2" Grid.Row="0" x:Name="template1" Content="template1"  Click="setTemplate1" HorizontalAlignment="Left" Width="60"  />
+            <Button Grid.Column="2" Grid.Row="0" x:Name="template2" Content="template2"  Click="setTemplate2" HorizontalAlignment="Center" Width="60"  />
+            <Button Grid.Column="2" Grid.Row="0" x:Name="template3" Content="template3"  Click="setTemplate3" HorizontalAlignment="Right" Width="60"  />
+
             <Button Grid.Column="2" Grid.Row="1" x:Name="Reset" Content="Reset"  Click="ResetClick"  Width="75"  />
             <Button Grid.Column="2" Grid.Row="1" x:Name="Start" Content="Start"  Click="StartClick" HorizontalAlignment="Left"  Width="75" />
             <Label Name="lblSpeed" Grid.Column="1" Grid.Row="0" Width="150" HorizontalAlignment="Left">vitesse de cycle en ms</Label>
+            
             <Slider Name="sliderSpeed" Grid.Column="1" Grid.Row="1" ValueChanged="SliderSpeedValueChanged" Minimum ="100" Maximum="2000" TickFrequency="50" Width="200"></Slider>
+            <Label Name="lblStats" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Width="150" HorizontalAlignment="Left">Statistiques :</Label>
+            <Label Name="lblIterations" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="0,20,0,0" Width="150" HorizontalAlignment="Left">N° itérations : </Label>
+            <Label Name="lblAlive" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="0,40,0,0" Width="150" HorizontalAlignment="Left">N° alive cell :</Label>
+
         </Grid>
 
     </StackPanel>

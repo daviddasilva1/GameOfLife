@@ -27,6 +27,10 @@ namespace GameOfLife
 
         private HashSet<Tuple<int, int>> tupleList = new HashSet<Tuple<int, int>>();
 
+        private int nbIterations = 0;
+
+        private int nbAliveCells = 0;
+
 
         public MainWindow()
         {
@@ -126,8 +130,19 @@ namespace GameOfLife
                 if (child is Rectangle)
                 {
                     Rectangle rect = (Rectangle)child;
-                    rect.Fill= new SolidColorBrush(System.Windows.Media.Colors.Turquoise);
+                    rect.Fill= new SolidColorBrush(System.Windows.Media.Colors.White);
                 }
+            }
+        }
+
+        public void resetCells()
+        {
+            var color = new SolidColorBrush(Colors.White);
+            foreach (Cell cell in cells)
+            {
+                cell.rectangle.Fill = color;
+                cell.State = State.DEAD;
+
             }
         }
 
@@ -141,6 +156,36 @@ namespace GameOfLife
             startGame();
         }
 
+
+        /// eventuellement faire une seule méthode pour les 3 template en passant le numéro du template en args
+        private void setTemplate1(object sender, RoutedEventArgs e)
+        {
+            int x=0, y = 0; // Top left position of the template
+            List<Tuple<int,int>> positionList = new List<Tuple<int, int>>();
+            positionList.Add(new Tuple<int, int>(x, y+2));
+            positionList.Add(new Tuple<int, int>(x+1, y+2));
+            positionList.Add(new Tuple<int, int>(x+2, y+2));
+            positionList.Add(new Tuple<int, int>(x+1, y));
+            positionList.Add(new Tuple<int, int>(x+2, y+1));
+            resetCells();
+            foreach(Tuple<int, int> cell in positionList)
+            {
+                cells[cell.Item1,cell.Item2].rectangle.Fill = new SolidColorBrush(Colors.Green);
+                cells[cell.Item1, cell.Item2].State = State.ALIVE;
+            }
+
+        }
+
+        private void setTemplate2(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void setTemplate3(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void startGame()
         {
             var dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
@@ -151,6 +196,7 @@ namespace GameOfLife
 
         private void evaluate(object sender, EventArgs e)
         {
+            
             foreach (Cell cell in cells)
             {
                 cell.prepare(cells);
@@ -159,7 +205,20 @@ namespace GameOfLife
             foreach (Cell cell in cells)
             {
                 cell.apply();
+                if (cell.State == State.ALIVE)
+                    nbAliveCells++;
             }
+            nbIterations++;
+            updateStats();
+        }
+
+        private void updateStats()
+        {
+            lblIterations.Content = "N° itérations : " + nbIterations;
+            lblAlive.Content = "N° alive cells : " + nbAliveCells; //Pas sur que ça marche !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            nbAliveCells = 0;
+
         }
 
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)

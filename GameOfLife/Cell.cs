@@ -22,7 +22,7 @@ namespace GameOfLife
         private State state;
         private State nextState;
 
-        private Rectangle rectangle;
+        public Rectangle rectangle;
 
         public Cell(int x,int y,Rectangle rectangle, State state=State.DEAD)
         {
