@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace GameOfLife
 {
@@ -67,8 +68,7 @@ namespace GameOfLife
             {
                 for (int j = 0; j < nbOfRowCell; j++)
                 {
-
-                    System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
+                    Rectangle rectangle = new System.Windows.Shapes.Rectangle();
                     rectangle.Name = "rectCol" + i.ToString() + "Row" + j.ToString();
                     rectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Turquoise);
                     HashSet<Tuple<int, int>>.Enumerator e = tupleList.GetEnumerator();
@@ -79,11 +79,7 @@ namespace GameOfLife
                         {
                             Console.WriteLine("ici");
                             rectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Green);
-
                         }
-
-
-
                     }
                     rectangle.Stroke = new SolidColorBrush(System.Windows.Media.Colors.Black);
 
@@ -92,7 +88,6 @@ namespace GameOfLife
 
                     myGrid.Children.Add(rectangle);
                     cells[i, j] = new Cell(i, j, rectangle);
-
                 }
             }
         }
@@ -123,7 +118,7 @@ namespace GameOfLife
         private void ResetClick(object sender, RoutedEventArgs e)
         {
             tupleList.Clear();
-
+            /*
             var depObj = myGrid;
 
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
@@ -132,9 +127,13 @@ namespace GameOfLife
                 if (child is Rectangle)
                 {
                     Rectangle rect = (Rectangle)child;
-                    rect.Fill= new SolidColorBrush(System.Windows.Media.Colors.White);
+                    rect.Fill = new SolidColorBrush(System.Windows.Media.Colors.White);
                 }
-            }
+            }*/
+            dispatcherTimer.Stop();
+            nbIterations = 0;
+            updateStats();
+            resetCells();
         }
 
         public void resetCells()
@@ -159,7 +158,6 @@ namespace GameOfLife
         }
 
 
-        /// eventuellement faire une seule méthode pour les 3 template en passant le numéro du template en args
         private void setPattern(object sender, RoutedEventArgs e)
         {
              // Top left position of the template
@@ -187,7 +185,6 @@ namespace GameOfLife
                 positionList.Add(new Tuple<int, int>(x + 7, y));
                 positionList.Add(new Tuple<int, int>(x + 8, y));
                 positionList.Add(new Tuple<int, int>(x + 9, y));
-
             }
             else
             {
@@ -196,19 +193,15 @@ namespace GameOfLife
                 int ySign = 1;
                 for(int i=0;i<4;i++)
                 {
-                    
                     positionList.Add(new Tuple<int, int>(x + xSign* 2, y - ySign*1));
                     positionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 1));
                     positionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 1));
-
                     positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 2));
                     positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 3));
                     positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 4));
-
                     positionList.Add(new Tuple<int, int>(x + xSign * 2, y - ySign * 6));
                     positionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 6));
                     positionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 6));
-
                     positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 2));
                     positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 3));
                     positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 4));
@@ -231,9 +224,10 @@ namespace GameOfLife
 
         }
 
+        private DispatcherTimer dispatcherTimer;
         private void startGame()
         {
-            var dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(evaluate);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)sliderSpeed.Value);
             dispatcherTimer.Start();
