@@ -40,7 +40,7 @@ namespace GameOfLife
         private int oldestCellAge = 0;
 
         private SolidColorBrush green = new SolidColorBrush(Colors.Green);
-        private SolidColorBrush turquoise = new SolidColorBrush(Colors.Turquoise);
+        private SolidColorBrush white = new SolidColorBrush(Colors.White);
         private SolidColorBrush black = new SolidColorBrush(Colors.Black);
 
 
@@ -80,7 +80,7 @@ namespace GameOfLife
                 {
                     Rectangle rectangle = new Rectangle();
                     rectangle.Name = "rectCol" + i.ToString() + "Row" + j.ToString();
-                    rectangle.Fill = turquoise;
+                    rectangle.Fill = white;
                     rectangle.Stroke = black;
                     Grid.SetColumn(rectangle, i);
                     Grid.SetRow(rectangle, j);
@@ -209,7 +209,7 @@ namespace GameOfLife
 
         public void resetCells()
         {
-            var color = turquoise;
+            var color = white;
             foreach (Cell cell in cells)
             {
                 cell.rectangle.Fill = color;
@@ -367,7 +367,7 @@ namespace GameOfLife
                 SolidColorBrush color = (SolidColorBrush)ClickedRectangle.Fill;
                 if (color.Color.Equals(Colors.Green))
                 {
-                    ClickedRectangle.Fill = new SolidColorBrush(Colors.Turquoise);
+                    ClickedRectangle.Fill = white;
                     int x = Grid.GetColumn(ClickedRectangle);
                     int y = Grid.GetRow(ClickedRectangle);
                     removeItem(x, y);
@@ -416,7 +416,7 @@ namespace GameOfLife
                     SolidColorBrush color = (SolidColorBrush)ClickedRectangle.Fill;
                     if (color.Color.Equals(Colors.Green))
                     {
-                        ClickedRectangle.Fill = new SolidColorBrush(Colors.Turquoise);
+                        ClickedRectangle.Fill = white;
                         int x = Grid.GetColumn(ClickedRectangle);
                         int y = Grid.GetRow(ClickedRectangle);
 

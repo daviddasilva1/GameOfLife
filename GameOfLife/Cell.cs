@@ -20,7 +20,7 @@ namespace GameOfLife
         public int Age { get => age; set => age = value; }
 
         private SolidColorBrush green = new SolidColorBrush(Colors.Green);
-        private SolidColorBrush turquoise = new SolidColorBrush(Colors.Turquoise);
+        private SolidColorBrush white = new SolidColorBrush(Colors.White);
 
         private State state;
         private State nextState;
@@ -86,7 +86,7 @@ namespace GameOfLife
             else
             {
                 Age = 0;
-                rectangle.Fill = turquoise;
+                rectangle.Fill = white;
             }
 
         }
