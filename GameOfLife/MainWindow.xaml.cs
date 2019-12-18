@@ -22,13 +22,15 @@ namespace GameOfLife
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool isDown = false;
+        private bool isLeft = false;
+        private bool isRight = false;
         private Cell[,] cells;
-        private int nbOfRowCell = 20;
+        private int nbOfRowCell = 15;
         private int nbOfColumnCell;
+        List<Tuple<int, int>> positionList = new List<Tuple<int, int>>();
 
 
-        private HashSet<Tuple<int, int>> tupleList = new HashSet<Tuple<int, int>>();
+       // private HashSet<Tuple<int, int>> tupleList = new HashSet<Tuple<int, int>>();
 
         private int nbIterations = 0;
 
@@ -38,7 +40,7 @@ namespace GameOfLife
         private int oldestCellAge = 0;
 
         private SolidColorBrush green = new SolidColorBrush(Colors.Green);
-        private SolidColorBrush white = new SolidColorBrush(Colors.White);
+        private SolidColorBrush turquoise = new SolidColorBrush(Colors.Turquoise);
         private SolidColorBrush black = new SolidColorBrush(Colors.Black);
 
 
@@ -69,6 +71,7 @@ namespace GameOfLife
 
                 myGrid.ColumnDefinitions.Add(gridCol);
             }
+
             cells = new Cell[nbOfColumnCell, nbOfRowCell];
 
             for (int i = 0; i < nbOfColumnCell; i++)
@@ -77,19 +80,8 @@ namespace GameOfLife
                 {
                     Rectangle rectangle = new Rectangle();
                     rectangle.Name = "rectCol" + i.ToString() + "Row" + j.ToString();
-                    rectangle.Fill = white;
-                    HashSet<Tuple<int, int>>.Enumerator e = tupleList.GetEnumerator();
-                    while (e.MoveNext())
-                    {
-                        Console.WriteLine(e.Current.Item1 + ";" + e.Current.Item2);
-                        if (e.Current.Item1 == i && e.Current.Item2 == j)
-                        {
-                            Console.WriteLine("ici");
-                            rectangle.Fill = green;
-                        }
-                    }
+                    rectangle.Fill = turquoise;
                     rectangle.Stroke = black;
-
                     Grid.SetColumn(rectangle, i);
                     Grid.SetRow(rectangle, j);
 
@@ -98,6 +90,21 @@ namespace GameOfLife
                 }
             }
             updateStats();
+
+            foreach (Tuple<int, int> cell in positionList.ToList())
+            {
+                if (cell.Item1 >= nbOfColumnCell || cell.Item2 >= nbOfRowCell)
+                {
+                    positionList.RemoveAll(x => x.Item1 == cell.Item1 && x.Item2 == cell.Item2);
+                }
+                else
+                {
+                    cells[cell.Item1, cell.Item2].rectangle.Fill = green;
+                    cells[cell.Item1, cell.Item2].State = State.ALIVE;
+                }
+
+            }
+
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -106,41 +113,25 @@ namespace GameOfLife
             if (e.OriginalSource is Rectangle)
             {
                 Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
-
-                //var mouseWasDownOn = e.Source as FrameworkElement;
-                //string elementName = mouseWasDownOn.Name;
-                //selectedRect = elementName.ToString();
                 ClickedRectangle.Fill = green;
-                // MessageBox.Show(selectedRect.ToString());
+
                 int x = Grid.GetColumn(ClickedRectangle);
                 int y = Grid.GetRow(ClickedRectangle);
+
                 cells[x, y].State = State.ALIVE;
                 Tuple<int, int> tuple = new Tuple<int, int>(x, y);
-                tupleList.Add(tuple);
-                //nbOfCellMin++;
-                //nbAliveCells++;
+                positionList.Add(tuple);
                 updateStats();
-
             }
+            isLeft = true;
 
-            isDown = true;
         }
+
+
 
         private void ResetClick(object sender, RoutedEventArgs e)
         {
-            tupleList.Clear();
-            /*
-            var depObj = myGrid;
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                if (child is Rectangle)
-                {
-                    Rectangle rect = (Rectangle)child;
-                    rect.Fill = new SolidColorBrush(System.Windows.Media.Colors.White);
-                }
-            }*/
+           
             dispatcherTimer.Stop();
             nbIterations = 0;
             nbOfCellMin = 0;
@@ -149,36 +140,56 @@ namespace GameOfLife
             oldestCellAge = 0;
             updateStats();
             resetCells();
-            SetEnableStart();
-            SetEnablePattern();
+            SetEnableButtonsReset();
+            positionList.Clear();
+        }
 
 
+        private void PauseClick(object sender, RoutedEventArgs e)
+        {
+            dispatcherTimer.Stop();
+            Pause.IsEnabled = false;
+            Start.IsEnabled = true;
+            sliderSpeed.IsEnabled = true;
+            sliderResize.IsEnabled = false;
 
 
         }
 
-        private void SetEnableStart()
+        private void SetEnableSliders()
         {
-            if(Start.IsEnabled)
+            if(sliderResize.IsEnabled)
             {
                 sliderResize.IsEnabled = false;
                 sliderSpeed.IsEnabled = false;
-                Start.IsEnabled = false;
-                Reset.IsEnabled = true;
-                Pause.IsEnabled = true;
-
             }
             else
             {
                 sliderResize.IsEnabled = true;
                 sliderSpeed.IsEnabled = true;
-                Start.IsEnabled = true;
-                Reset.IsEnabled = false;
-                Pause.IsEnabled = false;
             }
+
+
+        }
+        private void SetEnableButtonsStart()
+        {
+            SetEnableSliders();
+            SetEnableButtonsPattern();
+            Start.IsEnabled = false;
+            Pause.IsEnabled = true;
+            Reset.IsEnabled = true;
         }
 
-        private void SetEnablePattern()
+        private void SetEnableButtonsReset()
+        {
+            SetEnableSliders();
+            SetEnableButtonsPattern();
+            Pause.IsEnabled = false;
+            Reset.IsEnabled = false;
+            Start.IsEnabled = true;
+        }
+
+        private void SetEnableButtonsPattern()
         {
             if(pattern1.IsEnabled)
             {
@@ -194,23 +205,18 @@ namespace GameOfLife
             }
         }
 
-        private void PauseClick(object sender, RoutedEventArgs e)
-        {
-            dispatcherTimer.Stop();
-            Pause.IsEnabled = false;
-            Start.IsEnabled = true;
-            sliderSpeed.IsEnabled = false;
-        }
+
 
         public void resetCells()
         {
-            var color = white;
+            var color = turquoise;
             foreach (Cell cell in cells)
             {
                 cell.rectangle.Fill = color;
                 cell.State = State.DEAD;
                 
             }
+
         }
 
         private void SliderSpeedValueChanged(object sender, RoutedEventArgs e)
@@ -222,19 +228,19 @@ namespace GameOfLife
         {
             nbOfCellMin = 10000;
             startGame();
-            SetEnableStart();
-            SetEnablePattern();
-
+            SetEnableButtonsStart();
+            
         }
+
 
 
         private void setPattern(object sender, RoutedEventArgs e)
         {
              // Top left position of the template
-            List<Tuple<int,int>> positionList = new List<Tuple<int, int>>();
             Button btn = (Button)sender;
             if(btn.Name == "pattern1")
             {
+                positionList.Clear();
                 int x = 0, y = 0;
                 positionList.Add(new Tuple<int, int>(x, y + 2));
                 positionList.Add(new Tuple<int, int>(x + 1, y + 2));
@@ -244,6 +250,7 @@ namespace GameOfLife
             }
             else if(btn.Name == "pattern2")
             {
+                positionList.Clear();
                 int x = nbOfColumnCell/2-5, y = nbOfRowCell/2;
                 positionList.Add(new Tuple<int, int>(x, y));
                 positionList.Add(new Tuple<int, int>(x + 1,y));
@@ -258,6 +265,7 @@ namespace GameOfLife
             }
             else
             {
+                positionList.Clear();
                 int x = nbOfColumnCell / 2 , y = nbOfRowCell / 2;
                 int xSign = 1;
                 int ySign = 1;
@@ -286,10 +294,18 @@ namespace GameOfLife
             }
 
             resetCells();
-            foreach(Tuple<int, int> cell in positionList)
+            foreach (Tuple<int, int> cell in positionList)
             {
-                cells[cell.Item1,cell.Item2].rectangle.Fill = green;
-                cells[cell.Item1, cell.Item2].State = State.ALIVE;
+                if (cell.Item1 > nbOfColumnCell || cell.Item2 > nbOfRowCell)
+                {
+
+                }
+                else
+                {
+                    cells[cell.Item1, cell.Item2].rectangle.Fill = green;
+                    cells[cell.Item1, cell.Item2].State = State.ALIVE;
+                }
+
             }
 
         }
@@ -341,20 +357,46 @@ namespace GameOfLife
 
         }
 
+
+        private void Grid_MouseRightDown(object sender, MouseButtonEventArgs e)
+        {
+            //string selectedRect;
+            if (e.OriginalSource is Rectangle)
+            {
+                Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
+                SolidColorBrush color = (SolidColorBrush)ClickedRectangle.Fill;
+                if (color.Color.Equals(Colors.Green))
+                {
+                    ClickedRectangle.Fill = new SolidColorBrush(Colors.Turquoise);
+                    int x = Grid.GetColumn(ClickedRectangle);
+                    int y = Grid.GetRow(ClickedRectangle);
+                    removeItem(x, y);
+
+                }
+            }
+
+            isRight = true;
+        }
+
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            isDown = false;
+            isLeft = false;
         }
+
+
+        private void Grid_MouseRightUp(object sender, MouseButtonEventArgs e)
+        {
+            isRight = false;
+        }
+
 
         private void Grid_MouseMove(object sender, MouseEventArgs e)
         {
-            if(isDown)
+            if(e.OriginalSource is Rectangle)
             {
-                //string selectedRect;
-                if (e.OriginalSource is Rectangle)
+                Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
+                if (isLeft)
                 {
-                    Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
-
                     //var mouseWasDownOn = e.Source as FrameworkElement;
                     //string elementName = mouseWasDownOn.Name;
                     //selectedRect = elementName.ToString();
@@ -364,14 +406,39 @@ namespace GameOfLife
                     int y = Grid.GetRow(ClickedRectangle);
                     cells[x, y].State = State.ALIVE;
                     Tuple<int, int> tuple = new Tuple<int, int>(x, y);
-                    tupleList.Add(tuple);
                     //nbOfCellMin++;
                     //nbAliveCells++;
                     updateStats();
+                    positionList.Add(tuple);
+                }
+                if (isRight)
+                {
+                    SolidColorBrush color = (SolidColorBrush)ClickedRectangle.Fill;
+                    if (color.Color.Equals(Colors.Green))
+                    {
+                        ClickedRectangle.Fill = new SolidColorBrush(Colors.Turquoise);
+                        int x = Grid.GetColumn(ClickedRectangle);
+                        int y = Grid.GetRow(ClickedRectangle);
 
+                        removeItem(x, y);
+     
+                    }
                 }
             }
 
+        }
+
+        private void removeItem(int x,int y)
+        {
+            cells[x, y].State = State.DEAD;
+
+            foreach (Tuple<int, int> cell in positionList.ToList())
+            {
+                if (cell.Item1 >= x || cell.Item2 >= y)
+                {
+                    positionList.Remove(cell);
+                }
+            }
         }
 
         private void onDragCompleted(object sender, DragCompletedEventArgs e)
@@ -382,6 +449,7 @@ namespace GameOfLife
             nbOfRowCell = (int)value;
             myGrid.ColumnDefinitions.Clear();
             myGrid.RowDefinitions.Clear();
+            
             DrawGrid();
 
         }
