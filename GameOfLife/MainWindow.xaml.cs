@@ -306,6 +306,7 @@ namespace GameOfLife
         private void evaluate(object sender, EventArgs e)
         {
             nbAliveCells = 0;
+            oldestCellAge = 0;
 
             foreach (Cell cell in cells)
             {
