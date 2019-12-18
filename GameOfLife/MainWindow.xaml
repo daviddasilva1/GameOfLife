@@ -39,7 +39,12 @@
             <Slider Name="sliderSpeed" Grid.Column="1" Grid.Row="1" ValueChanged="SliderSpeedValueChanged" Minimum ="100" Maximum="2000" TickFrequency="50" Width="200"></Slider>
             <Label Name="lblStats" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Width="150" HorizontalAlignment="Left">Statistiques :</Label>
             <Label Name="lblIterations" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="0,20,0,0" Width="150" HorizontalAlignment="Left">N° itérations : </Label>
-            <Label Name="lblAlive" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="0,40,0,0" Width="150" HorizontalAlignment="Left">N° alive cell :</Label>
+            <Label Name="lblAlive" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="0,40,0,0" Width="150" HorizontalAlignment="Left">N° alive cell : </Label>
+            <Label Name="lblMin" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="150,0,0,0" Width="150" HorizontalAlignment="Left">Population min. : </Label>
+            <Label Name="lblMax" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="150,20,0,0" Width="150" HorizontalAlignment="Left">Population max. : </Label>
+
+            <Label Name="lblOldest" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="150,40,0,0" Width="150" HorizontalAlignment="Left">Oldest cell's age : </Label>
+
 
         </Grid>
 

@@ -33,6 +33,9 @@ namespace GameOfLife
         private int nbIterations = 0;
 
         private int nbAliveCells = 0;
+        private int nbOfCellMax =0;
+        private int nbOfCellMin = 0;
+        private int oldestCellAge = 0;
 
         private SolidColorBrush green = new SolidColorBrush(Colors.Green);
         private SolidColorBrush white = new SolidColorBrush(Colors.White);
@@ -94,6 +97,7 @@ namespace GameOfLife
                     cells[i, j] = new Cell(i, j, rectangle);
                 }
             }
+            updateStats();
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -113,6 +117,9 @@ namespace GameOfLife
                 cells[x, y].State = State.ALIVE;
                 Tuple<int, int> tuple = new Tuple<int, int>(x, y);
                 tupleList.Add(tuple);
+                //nbOfCellMin++;
+                //nbAliveCells++;
+                updateStats();
 
             }
 
@@ -136,6 +143,10 @@ namespace GameOfLife
             }*/
             dispatcherTimer.Stop();
             nbIterations = 0;
+            nbOfCellMin = 0;
+            nbOfCellMax = 0;
+            nbAliveCells = 0;
+            oldestCellAge = 0;
             updateStats();
             resetCells();
             SetEnableStart();
@@ -198,7 +209,7 @@ namespace GameOfLife
             {
                 cell.rectangle.Fill = color;
                 cell.State = State.DEAD;
-
+                
             }
         }
 
@@ -209,6 +220,7 @@ namespace GameOfLife
 
         private void StartClick(object sender, RoutedEventArgs e)
         {
+            nbOfCellMin = 10000;
             startGame();
             SetEnableStart();
             SetEnablePattern();
@@ -293,7 +305,8 @@ namespace GameOfLife
 
         private void evaluate(object sender, EventArgs e)
         {
-            
+            nbAliveCells = 0;
+
             foreach (Cell cell in cells)
             {
                 cell.prepare(cells);
@@ -304,7 +317,13 @@ namespace GameOfLife
                 cell.apply();
                 if (cell.State == State.ALIVE)
                     nbAliveCells++;
+                if (cell.Age > oldestCellAge)
+                    oldestCellAge = cell.Age;
             }
+            if (nbAliveCells > nbOfCellMax)
+                nbOfCellMax = nbAliveCells;
+            if (nbAliveCells < nbOfCellMin)
+                nbOfCellMin = nbAliveCells;
             nbIterations++;
             updateStats();
         }
@@ -312,9 +331,12 @@ namespace GameOfLife
         private void updateStats()
         {
             lblIterations.Content = "N° itérations : " + nbIterations;
-            lblAlive.Content = "N° alive cells : " + nbAliveCells; //Pas sur que ça marche !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-            nbAliveCells = 0;
+            lblAlive.Content = "Taille de population : " + nbAliveCells;
+            lblMin.Content = "Population min. :" + nbOfCellMin;
+            lblMax.Content = "Population max. :" + nbOfCellMax;
+            lblOldest.Content = "Oldest cell's age : " + oldestCellAge;
+            //pyramide des ages des cellules,
+            
 
         }
 
@@ -342,6 +364,9 @@ namespace GameOfLife
                     cells[x, y].State = State.ALIVE;
                     Tuple<int, int> tuple = new Tuple<int, int>(x, y);
                     tupleList.Add(tuple);
+                    //nbOfCellMin++;
+                    //nbAliveCells++;
+                    updateStats();
 
                 }
             }

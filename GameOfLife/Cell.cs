@@ -17,11 +17,15 @@ namespace GameOfLife
         public int X { get => x; set => x = value; }
         public State State { get => state; set => state = value; }
         public State NextState { get => nextState; set => nextState = value; }
+        public int Age { get => age; set => age = value; }
+
         private SolidColorBrush green = new SolidColorBrush(Colors.Green);
         private SolidColorBrush white = new SolidColorBrush(Colors.White);
 
         private State state;
         private State nextState;
+
+        private int age = 0;
 
         public Rectangle rectangle;
 
@@ -75,10 +79,17 @@ namespace GameOfLife
         public void apply()
         {
             state = nextState;
-            if(state == State.ALIVE)
+            if (state == State.ALIVE)
+            {
+                Age++;
                 rectangle.Fill = green;
+            }
             else
-                rectangle.Fill =white;
+            {
+                Age = 0;
+                rectangle.Fill = white;
+            }
+
         }
 
     }
