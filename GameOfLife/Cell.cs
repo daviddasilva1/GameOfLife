@@ -44,26 +44,25 @@ namespace GameOfLife
             int startY = Y-1;
             int endY = Y+1;
             int nbOfAliveNeighbour = 0;
-            if (X - 1 < 0)
-                startX = X;
-            if (X + 1 > grid.GetLength(0)-1)
-                endX = X;
-            if (Y - 1 < 0)
-                startY = Y;
-            if (Y + 1 > grid.GetLength(1)-1)
-                endY = Y;
+            int ri, rj;
 
-            for(int i = startX;i<=endX;i++)
+            for (int i = startX;i<=endX;i++)
             {
                 for(int j = startY;j<=endY;j++)
                 {
-                    if (!(i == X && j == Y))
-                        if (grid[i, j].State == State.ALIVE)
+                    ri = mod(i, grid.GetLength(0));
+                    rj = mod(j, grid.GetLength(1));
+                    if (!(ri == X && rj == Y))
+                        if (grid[ri, rj].State == State.ALIVE)
                             nbOfAliveNeighbour++;
-                        
                 }
             }
             return nbOfAliveNeighbour;
+        }
+
+        private int mod(int x, int m)
+        {
+            return (x % m + m) % m;
         }
 
         public void prepare(Cell[,] grid)
