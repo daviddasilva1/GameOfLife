@@ -17,7 +17,8 @@ namespace GameOfLife
         public int X { get => x; set => x = value; }
         public State State { get => state; set => state = value; }
         public State NextState { get => nextState; set => nextState = value; }
-
+        private SolidColorBrush green = new SolidColorBrush(Colors.Green);
+        private SolidColorBrush white = new SolidColorBrush(Colors.White);
 
         private State state;
         private State nextState;
@@ -75,9 +76,9 @@ namespace GameOfLife
         {
             state = nextState;
             if(state == State.ALIVE)
-                rectangle.Fill = new SolidColorBrush(Colors.Green);
+                rectangle.Fill = green;
             else
-                rectangle.Fill = new SolidColorBrush(Colors.Turquoise);
+                rectangle.Fill =white;
         }
 
     }

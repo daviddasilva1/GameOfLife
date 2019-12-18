@@ -34,6 +34,10 @@ namespace GameOfLife
 
         private int nbAliveCells = 0;
 
+        private SolidColorBrush green = new SolidColorBrush(Colors.Green);
+        private SolidColorBrush white = new SolidColorBrush(Colors.White);
+        private SolidColorBrush black = new SolidColorBrush(Colors.Black);
+
 
         public MainWindow()
         {
@@ -68,9 +72,9 @@ namespace GameOfLife
             {
                 for (int j = 0; j < nbOfRowCell; j++)
                 {
-                    Rectangle rectangle = new System.Windows.Shapes.Rectangle();
+                    Rectangle rectangle = new Rectangle();
                     rectangle.Name = "rectCol" + i.ToString() + "Row" + j.ToString();
-                    rectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Turquoise);
+                    rectangle.Fill = white;
                     HashSet<Tuple<int, int>>.Enumerator e = tupleList.GetEnumerator();
                     while (e.MoveNext())
                     {
@@ -78,10 +82,10 @@ namespace GameOfLife
                         if (e.Current.Item1 == i && e.Current.Item2 == j)
                         {
                             Console.WriteLine("ici");
-                            rectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Green);
+                            rectangle.Fill = green;
                         }
                     }
-                    rectangle.Stroke = new SolidColorBrush(System.Windows.Media.Colors.Black);
+                    rectangle.Stroke = black;
 
                     Grid.SetColumn(rectangle, i);
                     Grid.SetRow(rectangle, j);
@@ -102,7 +106,7 @@ namespace GameOfLife
                 //var mouseWasDownOn = e.Source as FrameworkElement;
                 //string elementName = mouseWasDownOn.Name;
                 //selectedRect = elementName.ToString();
-                ClickedRectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Green);
+                ClickedRectangle.Fill = green;
                 // MessageBox.Show(selectedRect.ToString());
                 int x = Grid.GetColumn(ClickedRectangle);
                 int y = Grid.GetRow(ClickedRectangle);
@@ -189,7 +193,7 @@ namespace GameOfLife
 
         public void resetCells()
         {
-            var color = new SolidColorBrush(Colors.Turquoise);
+            var color = white;
             foreach (Cell cell in cells)
             {
                 cell.rectangle.Fill = color;
@@ -272,7 +276,7 @@ namespace GameOfLife
             resetCells();
             foreach(Tuple<int, int> cell in positionList)
             {
-                cells[cell.Item1,cell.Item2].rectangle.Fill = new SolidColorBrush(Colors.Green);
+                cells[cell.Item1,cell.Item2].rectangle.Fill = green;
                 cells[cell.Item1, cell.Item2].State = State.ALIVE;
             }
 
@@ -281,7 +285,7 @@ namespace GameOfLife
         private DispatcherTimer dispatcherTimer;
         private void startGame()
         {
-            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(evaluate);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)sliderSpeed.Value);
             dispatcherTimer.Start();
@@ -331,7 +335,7 @@ namespace GameOfLife
                     //var mouseWasDownOn = e.Source as FrameworkElement;
                     //string elementName = mouseWasDownOn.Name;
                     //selectedRect = elementName.ToString();
-                    ClickedRectangle.Fill = new SolidColorBrush(System.Windows.Media.Colors.Green);
+                    ClickedRectangle.Fill = green;
                     // MessageBox.Show(selectedRect.ToString());
                     int x = Grid.GetColumn(ClickedRectangle);
                     int y = Grid.GetRow(ClickedRectangle);
