@@ -22,10 +22,12 @@
             <Grid.RowDefinitions>
                 <RowDefinition  />
                 <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
 
             <Label Grid.Column="0" Grid.Row="0" Width="150" >Nombre de lignes</Label>
-            <Slider Grid.Column="0" Name="sliderResize" Grid.Row="1" Thumb.DragCompleted="onDragCompleted" Minimum ="15" Maximum="30" TickFrequency="5" Width="200" ></Slider>
+            <Slider Grid.Column="0" Name="sliderResize" Grid.Row="1" Thumb.DragCompleted="onDragCompleted" Minimum ="17" Maximum="30" TickFrequency="5" Width="200" ></Slider>
+
             <Button Grid.Column="2" Grid.Row="0" x:Name="pattern1" Content="pattern 1"  Click="setPattern" HorizontalAlignment="Left" Width="60"  />
             <Button Grid.Column="2" Grid.Row="0" x:Name="pattern2" Content="pattern 2"  Click="setPattern" HorizontalAlignment="Center" Width="60"  />
             <Button Grid.Column="2" Grid.Row="0" x:Name="pattern3" Content="pattern 3"  Click="setPattern" HorizontalAlignment="Right" Width="60"  />
@@ -34,16 +36,27 @@
             <Button Grid.Column="2" Grid.Row="1" x:Name="Start" Content="Start"  Click="StartClick" HorizontalAlignment="Left"  Width="75" />
             <Button Grid.Column="2" Grid.Row="1" x:Name="Pause" Content="Pause"  Click="PauseClick" IsEnabled="False" HorizontalAlignment="Right"  Width="75" />
 
-            <Label Name="lblSpeed" Grid.Column="1" Grid.Row="0" Width="150" HorizontalAlignment="Left">vitesse de cycle en ms</Label>
-            
-            <Slider Name="sliderSpeed" Grid.Column="1" Grid.Row="1" ValueChanged="SliderSpeedValueChanged" Minimum ="100" Maximum="2000" TickFrequency="50" Width="200"></Slider>
-            <Label Name="lblStats" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Width="150" HorizontalAlignment="Left">Statistiques :</Label>
-            <Label Name="lblIterations" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="0,20,0,0" Width="150" HorizontalAlignment="Left">N° itérations : </Label>
-            <Label Name="lblAlive" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="0,40,0,0" Width="150" HorizontalAlignment="Left">N° alive cell : </Label>
-            <Label Name="lblMin" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="150,0,0,0" Width="150" HorizontalAlignment="Left">Population min. : </Label>
-            <Label Name="lblMax" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="150,20,0,0" Width="150" HorizontalAlignment="Left">Population max. : </Label>
+            <Label Name="lblSpeed" Grid.Column="1" Grid.Row="0" Width="150" HorizontalAlignment="Left" Margin="9.6,0,0,33.2" Grid.RowSpan="2">vitesse du cycle en ms</Label>
+            <Label  Grid.Column="1"  Content="{Binding Path=Speed,Mode=TwoWay}" Margin="149.6,0,17.8,33.2" Grid.RowSpan="2"/>
 
-            <Label Name="lblOldest" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="150,40,0,0" Width="150" HorizontalAlignment="Left">Oldest cell's age : </Label>
+
+            <Slider Name="sliderSpeed" Grid.Column="1" Grid.Row="1" Value="{Binding Path=Speed,Mode=TwoWay}" Minimum ="100" Maximum="2000" TickFrequency="50" Width="200"></Slider>
+            <Label Name="lblStats" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Width="150" HorizontalAlignment="Left">Statistiques :</Label>
+            <Label Name="lblIterations" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="0,20,0,0" Width="150" HorizontalAlignment="Left">N° itérations:</Label>
+            <Label  Content="{Binding Path=Iterations,Mode=TwoWay}"  Grid.Column="3" Grid.RowSpan="2" Grid.Row="0"  Margin="70.8,20,86.6,19.2"></Label>
+            <Label Name="lblAlive" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="0,40,0,0" Width="150"  HorizontalAlignment="Left">N° alive cell :</Label>
+            <Label  Content="{Binding Path=Alive,Mode=TwoWay}"  Grid.Column="3" Grid.Row="1"  Margin="70.8,5.4,86.6,0.2"/>
+
+            <Label Name="lblMin" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="150,0,0,0" Width="150" HorizontalAlignment="Left">Population min. :</Label>
+            <Label  Content="{Binding Path=PopMin,Mode=TwoWay}"  Grid.Column="3"  Margin="243.8,0,-86.4,5.6"/>
+
+            <Label Name="lblMax" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="150,20,0,0" Width="150" HorizontalAlignment="Left">Population max. :</Label>
+            <Label  Content="{Binding Path=PopMax,Mode=TwoWay}"  Grid.Column="3"  Margin="243.8,20,-86.4,19.2" Grid.RowSpan="2"/>
+
+
+            <Label Name="lblOldest" Grid.Column="3" Grid.RowSpan="2" Grid.Row="0" Margin="150,40,0,0" Width="150" HorizontalAlignment="Left">Oldest cell's age :</Label>
+            <Label  Content="{Binding Path=Oldest,Mode=TwoWay}"  Grid.Column="3"  Margin="243.8,5.4,-86.4,0.2" Grid.Row="1"/>
+
 
 
         </Grid>

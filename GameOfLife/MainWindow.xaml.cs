@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,24 +22,24 @@ namespace GameOfLife
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private bool isLeft = false;
         private bool isRight = false;
         private Cell[,] cells;
-        private int nbOfRowCell = 15;
+        private int nbOfRowCell = 17;
         private int nbOfColumnCell;
         List<Tuple<int, int>> positionList = new List<Tuple<int, int>>();
 
 
        // private HashSet<Tuple<int, int>> tupleList = new HashSet<Tuple<int, int>>();
 
-        private int nbIterations = 0;
+       // private int nbIterations = 0;
 
-        private int nbAliveCells = 0;
-        private int nbOfCellMax =0;
-        private int nbOfCellMin = 0;
-        private int oldestCellAge = 0;
+        //private int nbAliveCells = 0;
+        //private int nbOfCellMax =0;
+        //private int nbOfCellMin = 0;
+        //private int oldestCellAge = 0;
 
         private SolidColorBrush green = new SolidColorBrush(Colors.Green);
         private SolidColorBrush white = new SolidColorBrush(Colors.White);
@@ -48,6 +50,13 @@ namespace GameOfLife
         {
             InitializeComponent();
             DrawGrid();
+            Speed = 100;
+            Iterations = 0;
+            Oldest = 0;
+            
+
+            DataContext = this;
+
 
         }
 
@@ -133,11 +142,15 @@ namespace GameOfLife
         {
            
             dispatcherTimer.Stop();
-            nbIterations = 0;
-            nbOfCellMin = 0;
-            nbOfCellMax = 0;
-            nbAliveCells = 0;
-            oldestCellAge = 0;
+            // nbIterations = 0;
+            Iterations = 0;
+            //nbOfCellMin = 0;
+            PopMin=0;
+            //nbOfCellMax = 0;
+            PopMax = 0;
+            //nbAliveCells = 0;
+            Alive = 0;
+            Oldest = 0;
             updateStats();
             resetCells();
             SetEnableButtonsReset();
@@ -219,14 +232,14 @@ namespace GameOfLife
 
         }
 
-        private void SliderSpeedValueChanged(object sender, RoutedEventArgs e)
+/*private void SliderSpeedValueChanged(object sender, RoutedEventArgs e)
         {
             lblSpeed.Content = "Vitesse de cycle : " + (int)sliderSpeed.Value + "ms";
-        }
+        }*/
 
         private void StartClick(object sender, RoutedEventArgs e)
         {
-            nbOfCellMin = 10000;
+            PopMin = 10000;
             startGame();
             SetEnableButtonsStart();
             
@@ -315,14 +328,14 @@ namespace GameOfLife
         {
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(evaluate);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)sliderSpeed.Value);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, Speed);
             dispatcherTimer.Start();
         }
 
         private void evaluate(object sender, EventArgs e)
         {
-            nbAliveCells = 0;
-            oldestCellAge = 0;
+            Alive = 0;
+            Oldest = 0;
 
             foreach (Cell cell in cells)
             {
@@ -333,25 +346,26 @@ namespace GameOfLife
             {
                 cell.apply();
                 if (cell.State == State.ALIVE)
-                    nbAliveCells++;
-                if (cell.Age > oldestCellAge)
-                    oldestCellAge = cell.Age;
+                    Alive++;
+                if (cell.Age > Oldest)
+                    Oldest = cell.Age;
             }
-            if (nbAliveCells > nbOfCellMax)
-                nbOfCellMax = nbAliveCells;
-            if (nbAliveCells < nbOfCellMin)
-                nbOfCellMin = nbAliveCells;
-            nbIterations++;
+            if (Alive > PopMax)
+                PopMax = Alive;
+            if (Alive < PopMin)
+                PopMin = Alive;
+            //  nbIterations++;
+            Iterations++;
             updateStats();
         }
 
         private void updateStats()
         {
-            lblIterations.Content = "N° itérations : " + nbIterations;
-            lblAlive.Content = "Taille de population : " + nbAliveCells;
-            lblMin.Content = "Population min. :" + nbOfCellMin;
-            lblMax.Content = "Population max. :" + nbOfCellMax;
-            lblOldest.Content = "Oldest cell's age : " + oldestCellAge;
+           // lblIterations.Content = "N° itérations : " + nbIterations;
+            //lblAlive.Content = "Taille de population : " + nbAliveCells;
+           // lblMin.Content = "Population min. :" + nbOfCellMin;
+            //lblMax.Content = "Population max. :" + nbOfCellMax;
+            //lblOldest.Content = "Oldest cell's age : " + oldestCellAge;
             //pyramide des ages des cellules,
             
 
@@ -452,6 +466,93 @@ namespace GameOfLife
             
             DrawGrid();
 
+        }
+
+
+        private int _speed;
+        public int Speed
+        {
+            get { return _speed; }
+            set
+            {
+                if (_speed != value)
+                {
+                    _speed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private int _oldest;
+        public int Oldest
+        {
+            get { return _oldest; }
+            set
+            {
+                if (_oldest != value)
+                {
+                    _oldest = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _iterations;
+        public int Iterations
+        {
+            get { return _iterations; }
+            set
+            {
+                if (_iterations != value)
+                {
+                    _iterations = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _alive;
+        public int Alive
+        {
+            get { return _alive; }
+            set
+            {
+                if (_alive != value)
+                {
+                    _alive = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private int _popMin;
+        public int PopMin
+        {
+            get { return _popMin; }
+            set
+            {
+                if (_popMin != value)
+                {
+                    _popMin = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private int _popMax;
+        public int PopMax
+        {
+            get { return _popMax; }
+            set
+            {
+                if (_popMax != value)
+                {
+                    _popMax = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }
