@@ -330,10 +330,35 @@ namespace GameOfLife
         private void StartClick(object sender, RoutedEventArgs e)
         {
             PopMin = 10000;
+            if(positionList.Count==0)
+            {
+                setRandomCells();
+            }
             startGame();
             SetEnableButtonsStart();           
         }
 
+        /// <summary>
+        /// Set random cells if user did not use pattern or creates cells
+        /// </summary>
+        private void setRandomCells()
+        {
+            Random random = new Random();
+            for(int i=0;i<50;i++)
+            {
+                int col = random.Next(1, 20);
+                int row = random.Next(1, 17);
+                positionList.Add(new Tuple<int, int>(col, row));
+            }
+
+            foreach (Tuple<int, int> cell in positionList)
+            {
+              
+                    cells[cell.Item1, cell.Item2].rectangle.Fill = green;
+                    cells[cell.Item1, cell.Item2].State = State.ALIVE;
+                
+            }
+        }
 
         /// <summary>
         /// When user clicks in one of the pattern buttons
