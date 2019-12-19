@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,40 +22,139 @@ namespace GameOfLife
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+
+        //attributes declarations
         private bool isLeft = false;
         private bool isRight = false;
         private Cell[,] cells;
-        private int nbOfRowCell = 15;
+        private int nbOfRowCell = 17;
         private int nbOfColumnCell;
+        //list of tuple containing coordinates of our Cells
         List<Tuple<int, int>> positionList = new List<Tuple<int, int>>();
 
-
-       // private HashSet<Tuple<int, int>> tupleList = new HashSet<Tuple<int, int>>();
-
-        private int nbIterations = 0;
-
-        private int nbAliveCells = 0;
-        private int nbOfCellMax =0;
-        private int nbOfCellMin = 0;
-        private int oldestCellAge = 0;
-
+        //all colors used on our grid
         private SolidColorBrush green = new SolidColorBrush(Colors.Green);
         private SolidColorBrush white = new SolidColorBrush(Colors.White);
         private SolidColorBrush black = new SolidColorBrush(Colors.Black);
 
+        /*
+ * all the properties so we do databinding
+*/
+        private int _speed;
+        public int Speed
+        {
+            get { return _speed; }
+            set
+            {
+                if (_speed != value)
+                {
+                    _speed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private int _oldest;
+        public int Oldest
+        {
+            get { return _oldest; }
+            set
+            {
+                if (_oldest != value)
+                {
+                    _oldest = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
+        private int _iterations;
+        public int Iterations
+        {
+            get { return _iterations; }
+            set
+            {
+                if (_iterations != value)
+                {
+                    _iterations = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _alive;
+        public int Alive
+        {
+            get { return _alive; }
+            set
+            {
+                if (_alive != value)
+                {
+                    _alive = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private int _popMin;
+        public int PopMin
+        {
+            get { return _popMin; }
+            set
+            {
+                if (_popMin != value)
+                {
+                    _popMin = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private int _popMax;
+        public int PopMax
+        {
+            get { return _popMax; }
+            set
+            {
+                if (_popMax != value)
+                {
+                    _popMax = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Works with binding,called when values are changed.
+        /// </summary>
+        /// <param name="propertyName"></param>
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Class constructor
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
             DrawGrid();
+            Speed = 100;
+            Iterations = 0;
+            Oldest = 0;
+            DataContext = this; //so we can do databinding
+
 
         }
 
+        /// <summary>
+        /// Draw grid using parameters
+        /// </summary>
         private void DrawGrid()
         {
             double cellSize = 700 / nbOfRowCell;
+
+            //draw all rows
             for (int i = 0; i < nbOfRowCell; i++)
             {
                 RowDefinition gridRow = new RowDefinition();
@@ -64,6 +165,7 @@ namespace GameOfLife
 
             }
             nbOfColumnCell = Convert.ToInt32(SystemParameters.WorkArea.Width / cellSize);
+            //draw all columns
             for (int i = 0; i < nbOfColumnCell; i++)
             {
                 ColumnDefinition gridCol = new ColumnDefinition();
@@ -72,8 +174,10 @@ namespace GameOfLife
                 myGrid.ColumnDefinitions.Add(gridCol);
             }
 
+            //create 2d array
             cells = new Cell[nbOfColumnCell, nbOfRowCell];
 
+            //rectangle's creation
             for (int i = 0; i < nbOfColumnCell; i++)
             {
                 for (int j = 0; j < nbOfRowCell; j++)
@@ -89,8 +193,8 @@ namespace GameOfLife
                     cells[i, j] = new Cell(i, j, rectangle);
                 }
             }
-            updateStats();
 
+            //loop on the List so we check when grid is resized if we have to delete some cells or not
             foreach (Tuple<int, int> cell in positionList.ToList())
             {
                 if (cell.Item1 >= nbOfColumnCell || cell.Item2 >= nbOfRowCell)
@@ -107,44 +211,33 @@ namespace GameOfLife
 
         }
 
-        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            //string selectedRect;
-            if (e.OriginalSource is Rectangle)
-            {
-                Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
-                ClickedRectangle.Fill = green;
-
-                int x = Grid.GetColumn(ClickedRectangle);
-                int y = Grid.GetRow(ClickedRectangle);
-
-                cells[x, y].State = State.ALIVE;
-                Tuple<int, int> tuple = new Tuple<int, int>(x, y);
-                positionList.Add(tuple);
-                updateStats();
-            }
-            isLeft = true;
-
-        }
 
 
 
+        /// <summary>
+        /// When user clicks on Reset Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ResetClick(object sender, RoutedEventArgs e)
         {
-           
             dispatcherTimer.Stop();
-            nbIterations = 0;
-            nbOfCellMin = 0;
-            nbOfCellMax = 0;
-            nbAliveCells = 0;
-            oldestCellAge = 0;
-            updateStats();
+            Iterations = 0;
+            PopMin=0;
+            PopMax = 0;
+            Alive = 0;
+            Oldest = 0;
             resetCells();
             SetEnableButtonsReset();
             positionList.Clear();
         }
 
 
+        /// <summary>
+        /// When user clicks Pause Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PauseClick(object sender, RoutedEventArgs e)
         {
             dispatcherTimer.Stop();
@@ -152,10 +245,12 @@ namespace GameOfLife
             Start.IsEnabled = true;
             sliderSpeed.IsEnabled = true;
             sliderResize.IsEnabled = false;
-
-
         }
 
+
+        /// <summary>
+        /// Switch state of sliders
+        /// </summary>
         private void SetEnableSliders()
         {
             if(sliderResize.IsEnabled)
@@ -168,9 +263,11 @@ namespace GameOfLife
                 sliderResize.IsEnabled = true;
                 sliderSpeed.IsEnabled = true;
             }
-
-
         }
+
+        /// <summary>
+        /// Change state of buttons when clicking on Start
+        /// </summary>
         private void SetEnableButtonsStart()
         {
             SetEnableSliders();
@@ -180,6 +277,9 @@ namespace GameOfLife
             Reset.IsEnabled = true;
         }
 
+        /// <summary>
+        /// Change state of buttons when clicking on Reset
+        /// </summary>
         private void SetEnableButtonsReset()
         {
             SetEnableSliders();
@@ -189,6 +289,9 @@ namespace GameOfLife
             Start.IsEnabled = true;
         }
 
+        /// <summary>
+        /// Switch state of pattern buttons
+        /// </summary>
         private void SetEnableButtonsPattern()
         {
             if(pattern1.IsEnabled)
@@ -205,35 +308,38 @@ namespace GameOfLife
             }
         }
 
-
-
+        /// <summary>
+        /// Reset all cells
+        /// </summary>
         public void resetCells()
         {
             var color = white;
             foreach (Cell cell in cells)
             {
                 cell.rectangle.Fill = color;
-                cell.State = State.DEAD;
-                
+                cell.State = State.DEAD;           
             }
-
         }
 
-        private void SliderSpeedValueChanged(object sender, RoutedEventArgs e)
-        {
-            lblSpeed.Content = "Vitesse de cycle : " + (int)sliderSpeed.Value + "ms";
-        }
 
+        /// <summary>
+        /// When user clicks on Start Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartClick(object sender, RoutedEventArgs e)
         {
-            nbOfCellMin = 10000;
+            PopMin = 10000;
             startGame();
-            SetEnableButtonsStart();
-            
+            SetEnableButtonsStart();           
         }
 
 
-
+        /// <summary>
+        /// When user clicks in one of the pattern buttons
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void setPattern(object sender, RoutedEventArgs e)
         {
              // Top left position of the template
@@ -290,7 +396,6 @@ namespace GameOfLife
                     else if (i == 2)
                         xSign = 1;
                 }
-
             }
 
             resetCells();
@@ -305,24 +410,32 @@ namespace GameOfLife
                     cells[cell.Item1, cell.Item2].rectangle.Fill = green;
                     cells[cell.Item1, cell.Item2].State = State.ALIVE;
                 }
-
             }
-
         }
 
+
         private DispatcherTimer dispatcherTimer;
+
+        /// <summary>
+        /// Called at beginning of the game
+        /// </summary>
         private void startGame()
         {
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(evaluate);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)sliderSpeed.Value);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, Speed);
             dispatcherTimer.Start();
         }
 
+        /// <summary>
+        /// Evalute cell property and state
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void evaluate(object sender, EventArgs e)
         {
-            nbAliveCells = 0;
-            oldestCellAge = 0;
+            Alive = 0;
+            Oldest = 0;
 
             foreach (Cell cell in cells)
             {
@@ -333,31 +446,48 @@ namespace GameOfLife
             {
                 cell.apply();
                 if (cell.State == State.ALIVE)
-                    nbAliveCells++;
-                if (cell.Age > oldestCellAge)
-                    oldestCellAge = cell.Age;
+                    Alive++;
+                if (cell.Age > Oldest)
+                    Oldest = cell.Age;
             }
-            if (nbAliveCells > nbOfCellMax)
-                nbOfCellMax = nbAliveCells;
-            if (nbAliveCells < nbOfCellMin)
-                nbOfCellMin = nbAliveCells;
-            nbIterations++;
-            updateStats();
+            if (Alive > PopMax)
+                PopMax = Alive;
+            if (Alive < PopMin)
+                PopMin = Alive;
+            Iterations++;
         }
 
-        private void updateStats()
+
+
+        /// <summary>
+        /// When user clicks with left mouse
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Grid_MouseLeftDown(object sender, MouseButtonEventArgs e)
         {
-            lblIterations.Content = "N° itérations : " + nbIterations;
-            lblAlive.Content = "Taille de population : " + nbAliveCells;
-            lblMin.Content = "Population min. :" + nbOfCellMin;
-            lblMax.Content = "Population max. :" + nbOfCellMax;
-            lblOldest.Content = "Oldest cell's age : " + oldestCellAge;
-            //pyramide des ages des cellules,
-            
+            //string selectedRect;
+            if (e.OriginalSource is Rectangle)
+            {
+                Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
+                ClickedRectangle.Fill = green;
+
+                int x = Grid.GetColumn(ClickedRectangle);
+                int y = Grid.GetRow(ClickedRectangle);
+
+                cells[x, y].State = State.ALIVE;
+                Tuple<int, int> tuple = new Tuple<int, int>(x, y);
+                positionList.Add(tuple);
+            }
+            isLeft = true;
 
         }
 
-
+        /// <summary>
+        /// When user clicks with the right mouse
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Grid_MouseRightDown(object sender, MouseButtonEventArgs e)
         {
             //string selectedRect;
@@ -371,25 +501,38 @@ namespace GameOfLife
                     int x = Grid.GetColumn(ClickedRectangle);
                     int y = Grid.GetRow(ClickedRectangle);
                     removeItem(x, y);
-
                 }
             }
 
             isRight = true;
         }
 
+
+        /// <summary>
+        /// When user releases Left Mouse 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
             isLeft = false;
         }
 
-
+        /// <summary>
+        /// When user releases Right Mouse
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Grid_MouseRightUp(object sender, MouseButtonEventArgs e)
         {
             isRight = false;
         }
 
-
+        /// <summary>
+        /// When user clicks and moves with mouse
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Grid_MouseMove(object sender, MouseEventArgs e)
         {
             if(e.OriginalSource is Rectangle)
@@ -397,18 +540,11 @@ namespace GameOfLife
                 Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
                 if (isLeft)
                 {
-                    //var mouseWasDownOn = e.Source as FrameworkElement;
-                    //string elementName = mouseWasDownOn.Name;
-                    //selectedRect = elementName.ToString();
                     ClickedRectangle.Fill = green;
-                    // MessageBox.Show(selectedRect.ToString());
                     int x = Grid.GetColumn(ClickedRectangle);
                     int y = Grid.GetRow(ClickedRectangle);
                     cells[x, y].State = State.ALIVE;
                     Tuple<int, int> tuple = new Tuple<int, int>(x, y);
-                    //nbOfCellMin++;
-                    //nbAliveCells++;
-                    updateStats();
                     positionList.Add(tuple);
                 }
                 if (isRight)
@@ -419,15 +555,19 @@ namespace GameOfLife
                         ClickedRectangle.Fill = white;
                         int x = Grid.GetColumn(ClickedRectangle);
                         int y = Grid.GetRow(ClickedRectangle);
-
-                        removeItem(x, y);
-     
+                        removeItem(x, y);   
                     }
                 }
             }
 
         }
 
+
+        /// <summary>
+        /// Remove cell if grid is resized
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         private void removeItem(int x,int y)
         {
             cells[x, y].State = State.DEAD;
@@ -441,6 +581,12 @@ namespace GameOfLife
             }
         }
 
+
+        /// <summary>
+        /// When user stops dragging on slider
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void onDragCompleted(object sender, DragCompletedEventArgs e)
         {
             
@@ -453,6 +599,9 @@ namespace GameOfLife
             DrawGrid();
 
         }
+
+
+
 
     }
 }
