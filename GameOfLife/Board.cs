@@ -18,6 +18,17 @@ namespace GameOfLife
         //list of tuple containing coordinates of our Cells
         List<Tuple<int, int>> positionList = new List<Tuple<int, int>>();
 
+        public List<Tuple<int, int>> PositionList { get => positionList; }
+
+        public int NbOfColumnCell { get => nbOfColumnCell; }
+
+        public int NbOfRowCell { get => nbOfRowCell; }
+
+
+
+        public Cell[,] Cell { get => cells; set => cells = value; }
+
+
         //all colors used on our grid
         private SolidColorBrush green = new SolidColorBrush(Colors.Green);
         private SolidColorBrush white = new SolidColorBrush(Colors.White);
@@ -93,5 +104,40 @@ namespace GameOfLife
 
             }
         }
+
+        /// <summary>
+        /// Set random cells if user did not use pattern or creates cells
+        /// </summary>
+        public void setRandomCells()
+        {
+            Random random = new Random();
+            for (int i = 0; i < 50; i++)
+            {
+                int col = random.Next(1, 20);
+                int row = random.Next(1, 17);
+                positionList.Add(new Tuple<int, int>(col, row));
+            }
+
+            foreach (Tuple<int, int> cell in positionList)
+            {
+                cells[cell.Item1, cell.Item2].rectangle.Fill = green;
+                cells[cell.Item1, cell.Item2].State = State.ALIVE;
+            }
+        }
+
+
+        /// <summary>
+        /// Reset all cells
+        /// </summary>
+        public void resetCells()
+        {
+            var color = white;
+            foreach (Cell cell in cells)
+            {
+                cell.rectangle.Fill = color;
+                cell.State = State.DEAD;
+            }
+        }
+
     }
 }

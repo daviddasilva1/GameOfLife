@@ -233,7 +233,7 @@ namespace GameOfLife
             Oldest = 0;
             resetCells();
             SetEnableButtonsReset();
-            positionList.Clear();
+            board.PositionList.Clear();
         }
 
 
@@ -318,7 +318,7 @@ namespace GameOfLife
         public void resetCells()
         {
             var color = white;
-            foreach (Cell cell in cells)
+            foreach (Cell cell in board.Cell)
             {
                 cell.rectangle.Fill = color;
                 cell.State = State.DEAD;           
@@ -334,113 +334,118 @@ namespace GameOfLife
         private void StartClick(object sender, RoutedEventArgs e)
         {
             PopMin = 10000;
-            if(positionList.Count==0)
-            {
-                setRandomCells();
-            }
-            startGame();
-            SetEnableButtonsStart();           
-        }
-
-        /// <summary>
-        /// Set random cells if user did not use pattern or creates cells
-        /// </summary>
-        private void setRandomCells()
-        {
-            Random random = new Random();
-            for(int i=0;i<50;i++)
-            {
-                int col = random.Next(1, 20);
-                int row = random.Next(1, 17);
-                positionList.Add(new Tuple<int, int>(col, row));
-                PopMin = 50;
-                PopMax = 50;
-            }
-
-            foreach (Tuple<int, int> cell in positionList)
-            {
-                    cells[cell.Item1, cell.Item2].rectangle.Fill = green;
-                    cells[cell.Item1, cell.Item2].State = State.ALIVE;              
-            }
-        }
-
-        /// <summary>
-        /// When user clicks in one of the pattern buttons
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void setPattern(object sender, RoutedEventArgs e)
-        {
-             // Top left position of the template
-            Button btn = (Button)sender;
-            if(btn.Name == "pattern1")
-            {
-                positionList.Clear();
-                int x = 0, y = 0;
-                positionList.Add(new Tuple<int, int>(x, y + 2));
-                positionList.Add(new Tuple<int, int>(x + 1, y + 2));
-                positionList.Add(new Tuple<int, int>(x + 2, y + 2));
-                positionList.Add(new Tuple<int, int>(x + 1, y));
-                positionList.Add(new Tuple<int, int>(x + 2, y + 1));
-            }
-            else if(btn.Name == "pattern2")
-            {
-                positionList.Clear();
-                int x = nbOfColumnCell/2-5, y = nbOfRowCell/2;
-                positionList.Add(new Tuple<int, int>(x, y));
-                positionList.Add(new Tuple<int, int>(x + 1,y));
-                positionList.Add(new Tuple<int, int>(x + 2, y));
-                positionList.Add(new Tuple<int, int>(x + 3, y));
-                positionList.Add(new Tuple<int, int>(x + 4, y));
-                positionList.Add(new Tuple<int, int>(x + 5, y));
-                positionList.Add(new Tuple<int, int>(x + 6, y));
-                positionList.Add(new Tuple<int, int>(x + 7, y));
-                positionList.Add(new Tuple<int, int>(x + 8, y));
-                positionList.Add(new Tuple<int, int>(x + 9, y));
-            }
-            else
-            {
-                positionList.Clear();
-                int x = nbOfColumnCell / 2 , y = nbOfRowCell / 2;
-                int xSign = 1;
-                int ySign = 1;
-                for(int i=0;i<4;i++)
+            if (board.PositionList.Count == 0)
+            
                 {
-                    positionList.Add(new Tuple<int, int>(x + xSign* 2, y - ySign*1));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 1));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 1));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 2));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 3));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 4));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 2, y - ySign * 6));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 6));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 6));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 2));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 3));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 4));
-                    if (i == 0)
-                        xSign = -1;
-                    else if (i == 1)
-                        ySign = -1;
-                    else if (i == 2)
-                        xSign = 1;
+                    board.setRandomCells();
+                    PopMin = 50;
+                    PopMax = 50;
                 }
-            }
+                startGame();
+                SetEnableButtonsStart();
+            
+        }
 
-            resetCells();
-            foreach (Tuple<int, int> cell in positionList)
+            /// <summary>
+            /// Set random cells if user did not use pattern or creates cells
+            /// </summary>
+            /*  private void setRandomCells()
+              {
+                  Random random = new Random();
+                  for(int i=0;i<50;i++)
+                  {
+                      int col = random.Next(1, 20);
+                      int row = random.Next(1, 17);
+                      positionList.Add(new Tuple<int, int>(col, row));
+                      PopMin = 50;
+                      PopMax = 50;
+                  }
+
+                  foreach (Tuple<int, int> cell in positionList)
+                  {
+                          cells[cell.Item1, cell.Item2].rectangle.Fill = green;
+                          cells[cell.Item1, cell.Item2].State = State.ALIVE;              
+                  }
+              }*/
+
+            /// <summary>
+            /// When user clicks in one of the pattern buttons
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void setPattern(object sender, RoutedEventArgs e)
             {
-                if (cell.Item1 > nbOfColumnCell || cell.Item2 > nbOfRowCell)
+                // Top left position of the template
+                Button btn = (Button)sender;
+                if (btn.Name == "pattern1")
                 {
-
+                    board.PositionList.Clear();
+                    int x = 0, y = 0;
+                board.PositionList.Add(new Tuple<int, int>(x, y + 2));
+                board.PositionList.Add(new Tuple<int, int>(x + 1, y + 2));
+                board.PositionList.Add(new Tuple<int, int>(x + 2, y + 2));
+                board.PositionList.Add(new Tuple<int, int>(x + 1, y));
+                board.PositionList.Add(new Tuple<int, int>(x + 2, y + 1));
+                }
+                else if (btn.Name == "pattern2")
+                {
+                board.PositionList.Clear();
+                    int x = board.NbOfColumnCell / 2 - 5, y = board.NbOfRowCell / 2;
+                board.PositionList.Add(new Tuple<int, int>(x, y));
+                board.PositionList.Add(new Tuple<int, int>(x + 1, y));
+                board.PositionList.Add(new Tuple<int, int>(x + 2, y));
+                board.PositionList.Add(new Tuple<int, int>(x + 3, y));
+                board.PositionList.Add(new Tuple<int, int>(x + 4, y));
+                board.PositionList.Add(new Tuple<int, int>(x + 5, y));
+                board.PositionList.Add(new Tuple<int, int>(x + 6, y));
+                board.PositionList.Add(new Tuple<int, int>(x + 7, y));
+                board.PositionList.Add(new Tuple<int, int>(x + 8, y));
+                board.PositionList.Add(new Tuple<int, int>(x + 9, y));
                 }
                 else
                 {
-                    cells[cell.Item1, cell.Item2].rectangle.Fill = green;
-                    cells[cell.Item1, cell.Item2].State = State.ALIVE;
+                board.PositionList.Clear();
+                    int x = board.NbOfColumnCell / 2, y = board.NbOfRowCell / 2;
+                    int xSign = 1;
+                    int ySign = 1;
+                    for (int i = 0; i < 4; i++)
+                    {
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 2, y - ySign * 1));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 1));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 1));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 2));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 3));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 4));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 2, y - ySign * 6));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 6));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 6));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 2));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 3));
+                    board.PositionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 4));
+                        if (i == 0)
+                            xSign = -1;
+                        else if (i == 1)
+                            ySign = -1;
+                        else if (i == 2)
+                            xSign = 1;
+                    }
+                }
+
+                board.resetCells();
+                foreach (Tuple<int, int> cell in board.PositionList)
+                {
+                    if (cell.Item1 > board.NbOfColumnCell || cell.Item2 > board.NbOfRowCell)
+                    {
+
+                    }
+                    else
+                    {
+                        board.Cell[cell.Item1, cell.Item2].rectangle.Fill = green;
+                        board.Cell[cell.Item1, cell.Item2].State = State.ALIVE;
+                    }
                 }
             }
-        }
+            
 
 
         private DispatcherTimer dispatcherTimer;
@@ -466,12 +471,12 @@ namespace GameOfLife
             Alive = 0;
             Oldest = 0;
 
-            foreach (Cell cell in cells)
+            foreach (Cell cell in board.Cell)
             {
-                cell.prepare(cells);
+                cell.prepare(board.Cell);
             }
 
-            foreach (Cell cell in cells)
+            foreach (Cell cell in board.Cell)
             {
                 cell.apply();
                 if (cell.State == State.ALIVE)
@@ -504,9 +509,9 @@ namespace GameOfLife
                 int x = Grid.GetColumn(ClickedRectangle);
                 int y = Grid.GetRow(ClickedRectangle);
 
-                cells[x, y].State = State.ALIVE;
+                board.Cell[x, y].State = State.ALIVE;
                 Tuple<int, int> tuple = new Tuple<int, int>(x, y);
-                positionList.Add(tuple);
+                board.PositionList.Add(tuple);
             }
             isLeft = true;
 
@@ -572,9 +577,9 @@ namespace GameOfLife
                     ClickedRectangle.Fill = green;
                     int x = Grid.GetColumn(ClickedRectangle);
                     int y = Grid.GetRow(ClickedRectangle);
-                    cells[x, y].State = State.ALIVE;
+                    board.Cell[x, y].State = State.ALIVE;
                     Tuple<int, int> tuple = new Tuple<int, int>(x, y);
-                    positionList.Add(tuple);
+                    board.PositionList.Add(tuple);
                 }
                 if (isRight)
                 {
@@ -599,13 +604,13 @@ namespace GameOfLife
         /// <param name="y"></param>
         private void removeItem(int x,int y)
         {
-            cells[x, y].State = State.DEAD;
+            board.Cell[x, y].State = State.DEAD;
 
-            foreach (Tuple<int, int> cell in positionList.ToList())
+            foreach (Tuple<int, int> cell in board.PositionList.ToList())
             {
                 if (cell.Item1 >= x || cell.Item2 >= y)
                 {
-                    positionList.Remove(cell);
+                    board.PositionList.Remove(cell);
                 }
             }
         }
