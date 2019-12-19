@@ -25,6 +25,8 @@ namespace GameOfLife
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
 
+        private Board board;
+
         //attributes declarations
         private bool isLeft = false;
         private bool isRight = false;
@@ -138,7 +140,9 @@ namespace GameOfLife
         public MainWindow()
         {
             InitializeComponent();
-            DrawGrid();
+            // DrawGrid();
+            board = new Board(nbOfRowCell, nbOfColumnCell, myGrid);
+            board.InitBoard();
             Speed = 100;
             Iterations = 0;
             Oldest = 0;
@@ -620,8 +624,9 @@ namespace GameOfLife
             nbOfRowCell = (int)value;
             myGrid.ColumnDefinitions.Clear();
             myGrid.RowDefinitions.Clear();
-            
-            DrawGrid();
+
+            //DrawGrid();
+            board.InitBoard();
 
         }
 
