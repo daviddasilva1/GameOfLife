@@ -8,6 +8,9 @@ using System.Windows.Shapes;
 
 namespace GameOfLife
 {
+    /// <summary>
+    /// Cell class that matches with every rectangle
+    /// </summary>
     class Cell
     {
         private int x;
@@ -29,6 +32,13 @@ namespace GameOfLife
 
         public Rectangle rectangle;
 
+        /// <summary>
+        /// Initialiser of a cell
+        /// </summary>
+        /// <param name="x">x position</param>
+        /// <param name="y">y position</param>
+        /// <param name="rectangle">rectangle used</param>
+        /// <param name="state">beginning state</param>
         public Cell(int x,int y,Rectangle rectangle, State state=State.DEAD)
         {
             X = x;
@@ -36,7 +46,11 @@ namespace GameOfLife
             this.rectangle = rectangle;
             State = state;
         }
-
+        /// <summary>
+        /// Get number of neighbours alive
+        /// </summary>
+        /// <param name="grid"> Prend grille en paramètre</param>
+        /// <returns></returns>
         public int getNbOfAliveNeighbour(Cell[,] grid)
         {
             int startX = X-1;
@@ -59,12 +73,20 @@ namespace GameOfLife
             }
             return nbOfAliveNeighbour;
         }
-
+        /// <summary>
+        /// Calculate modulos so we can loop between simulation
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="m"></param>
+        /// <returns></returns>
         private int mod(int x, int m)
         {
             return (x % m + m) % m;
         }
-
+        /// <summary>
+        /// Change cell's state
+        /// </summary>
+        /// <param name="grid"></param>
         public void prepare(Cell[,] grid)
         {
             if (getNbOfAliveNeighbour(grid) == 3)
@@ -75,6 +97,9 @@ namespace GameOfLife
                 nextState = State.DEAD;
         }
 
+        /// <summary>
+        /// Modify cell's color and age
+        /// </summary>
         public void apply()
         {
             state = nextState;
