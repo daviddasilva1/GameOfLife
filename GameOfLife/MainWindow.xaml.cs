@@ -349,14 +349,14 @@ namespace GameOfLife
                 int col = random.Next(1, 20);
                 int row = random.Next(1, 17);
                 positionList.Add(new Tuple<int, int>(col, row));
+                PopMin = 50;
+                PopMax = 50;
             }
 
             foreach (Tuple<int, int> cell in positionList)
             {
-              
                     cells[cell.Item1, cell.Item2].rectangle.Fill = green;
-                    cells[cell.Item1, cell.Item2].State = State.ALIVE;
-                
+                    cells[cell.Item1, cell.Item2].State = State.ALIVE;              
             }
         }
 
