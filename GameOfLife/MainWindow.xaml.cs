@@ -25,6 +25,8 @@ namespace GameOfLife
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
 
+        private Board board;
+
         //attributes declarations
         private bool isLeft = false;
         private bool isRight = false;
@@ -138,7 +140,9 @@ namespace GameOfLife
         public MainWindow()
         {
             InitializeComponent();
-            DrawGrid();
+            // DrawGrid();
+            board = new Board(nbOfRowCell, nbOfColumnCell, myGrid);
+            board.InitBoard();
             Speed = 100;
             Iterations = 0;
             Oldest = 0;
@@ -146,73 +150,6 @@ namespace GameOfLife
 
 
         }
-
-        /// <summary>
-        /// Draw grid using parameters
-        /// </summary>
-        private void DrawGrid()
-        {
-            double cellSize = 700 / nbOfRowCell;
-
-            //draw all rows
-            for (int i = 0; i < nbOfRowCell; i++)
-            {
-                RowDefinition gridRow = new RowDefinition();
-
-                gridRow.Height = new GridLength(cellSize);
-
-                myGrid.RowDefinitions.Add(gridRow);
-
-            }
-            nbOfColumnCell = Convert.ToInt32(SystemParameters.WorkArea.Width / cellSize);
-            //draw all columns
-            for (int i = 0; i < nbOfColumnCell; i++)
-            {
-                ColumnDefinition gridCol = new ColumnDefinition();
-                gridCol.Width = new GridLength(cellSize);
-
-                myGrid.ColumnDefinitions.Add(gridCol);
-            }
-
-            //create 2d array
-            cells = new Cell[nbOfColumnCell, nbOfRowCell];
-
-            //rectangle's creation
-            for (int i = 0; i < nbOfColumnCell; i++)
-            {
-                for (int j = 0; j < nbOfRowCell; j++)
-                {
-                    Rectangle rectangle = new Rectangle();
-                    rectangle.Name = "rectCol" + i.ToString() + "Row" + j.ToString();
-                    rectangle.Fill = white;
-                    rectangle.Stroke = black;
-                    Grid.SetColumn(rectangle, i);
-                    Grid.SetRow(rectangle, j);
-
-                    myGrid.Children.Add(rectangle);
-                    cells[i, j] = new Cell(i, j, rectangle);
-                }
-            }
-
-            //loop on the List so we check when grid is resized if we have to delete some cells or not
-            foreach (Tuple<int, int> cell in positionList.ToList())
-            {
-                if (cell.Item1 >= nbOfColumnCell || cell.Item2 >= nbOfRowCell)
-                {
-                    positionList.RemoveAll(x => x.Item1 == cell.Item1 && x.Item2 == cell.Item2);
-                }
-                else
-                {
-                    cells[cell.Item1, cell.Item2].rectangle.Fill = green;
-                    cells[cell.Item1, cell.Item2].State = State.ALIVE;
-                }
-
-            }
-
-        }
-
-
-
 
         /// <summary>
         /// When user clicks on Reset Button
@@ -227,9 +164,9 @@ namespace GameOfLife
             PopMax = 0;
             Alive = 0;
             Oldest = 0;
-            resetCells();
+            board.resetCells();
             SetEnableButtonsReset();
-            positionList.Clear();
+            board.PositionList.Clear();
         }
 
 
@@ -307,21 +244,6 @@ namespace GameOfLife
                 pattern3.IsEnabled = true;
             }
         }
-
-        /// <summary>
-        /// Reset all cells
-        /// </summary>
-        public void resetCells()
-        {
-            var color = white;
-            foreach (Cell cell in cells)
-            {
-                cell.rectangle.Fill = color;
-                cell.State = State.DEAD;           
-            }
-        }
-
-
         /// <summary>
         /// When user clicks on Start Button
         /// </summary>
@@ -330,115 +252,22 @@ namespace GameOfLife
         private void StartClick(object sender, RoutedEventArgs e)
         {
             PopMin = 10000;
-            if(positionList.Count==0)
-            {
-                setRandomCells();
-            }
-            startGame();
-            SetEnableButtonsStart();           
+            if (board.PositionList.Count == 0)
+            
+                {
+                    board.setRandomCells();
+                    PopMin = 50;
+                    PopMax = 50;
+                }
+                startGame();
+                SetEnableButtonsStart();
+            
         }
-
-        /// <summary>
-        /// Set random cells if user did not use pattern or creates cells
-        /// </summary>
-        private void setRandomCells()
+           private void setPattern(object sender, RoutedEventArgs e)
         {
-            Random random = new Random();
-            for(int i=0;i<50;i++)
-            {
-                int col = random.Next(1, 20);
-                int row = random.Next(1, 17);
-                positionList.Add(new Tuple<int, int>(col, row));
-                PopMin = 50;
-                PopMax = 50;
-            }
-
-            foreach (Tuple<int, int> cell in positionList)
-            {
-                    cells[cell.Item1, cell.Item2].rectangle.Fill = green;
-                    cells[cell.Item1, cell.Item2].State = State.ALIVE;              
-            }
+            board.setPattern(sender);
         }
-
-        /// <summary>
-        /// When user clicks in one of the pattern buttons
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void setPattern(object sender, RoutedEventArgs e)
-        {
-             // Top left position of the template
-            Button btn = (Button)sender;
-            if(btn.Name == "pattern1")
-            {
-                positionList.Clear();
-                int x = 0, y = 0;
-                positionList.Add(new Tuple<int, int>(x, y + 2));
-                positionList.Add(new Tuple<int, int>(x + 1, y + 2));
-                positionList.Add(new Tuple<int, int>(x + 2, y + 2));
-                positionList.Add(new Tuple<int, int>(x + 1, y));
-                positionList.Add(new Tuple<int, int>(x + 2, y + 1));
-            }
-            else if(btn.Name == "pattern2")
-            {
-                positionList.Clear();
-                int x = nbOfColumnCell/2-5, y = nbOfRowCell/2;
-                positionList.Add(new Tuple<int, int>(x, y));
-                positionList.Add(new Tuple<int, int>(x + 1,y));
-                positionList.Add(new Tuple<int, int>(x + 2, y));
-                positionList.Add(new Tuple<int, int>(x + 3, y));
-                positionList.Add(new Tuple<int, int>(x + 4, y));
-                positionList.Add(new Tuple<int, int>(x + 5, y));
-                positionList.Add(new Tuple<int, int>(x + 6, y));
-                positionList.Add(new Tuple<int, int>(x + 7, y));
-                positionList.Add(new Tuple<int, int>(x + 8, y));
-                positionList.Add(new Tuple<int, int>(x + 9, y));
-            }
-            else
-            {
-                positionList.Clear();
-                int x = nbOfColumnCell / 2 , y = nbOfRowCell / 2;
-                int xSign = 1;
-                int ySign = 1;
-                for(int i=0;i<4;i++)
-                {
-                    positionList.Add(new Tuple<int, int>(x + xSign* 2, y - ySign*1));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 1));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 1));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 2));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 3));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 4));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 2, y - ySign * 6));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 6));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 6));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 2));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 3));
-                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 4));
-                    if (i == 0)
-                        xSign = -1;
-                    else if (i == 1)
-                        ySign = -1;
-                    else if (i == 2)
-                        xSign = 1;
-                }
-            }
-
-            resetCells();
-            foreach (Tuple<int, int> cell in positionList)
-            {
-                if (cell.Item1 > nbOfColumnCell || cell.Item2 > nbOfRowCell)
-                {
-
-                }
-                else
-                {
-                    cells[cell.Item1, cell.Item2].rectangle.Fill = green;
-                    cells[cell.Item1, cell.Item2].State = State.ALIVE;
-                }
-            }
-        }
-
-
+ 
         private DispatcherTimer dispatcherTimer;
 
         /// <summary>
@@ -447,27 +276,27 @@ namespace GameOfLife
         private void startGame()
         {
             dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += new EventHandler(evaluate);
+            dispatcherTimer.Tick += new EventHandler(Evaluate);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, Speed);
             dispatcherTimer.Start();
         }
 
         /// <summary>
-        /// Evalute cell property and state
+        ///Call bord's method to evaluate each cell
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void evaluate(object sender, EventArgs e)
+        private void Evaluate(object sender, EventArgs e)
         {
             Alive = 0;
             Oldest = 0;
 
-            foreach (Cell cell in cells)
+            foreach (Cell cell in board.Cells)
             {
-                cell.prepare(cells);
+                cell.prepare(board.Cells);
             }
 
-            foreach (Cell cell in cells)
+            foreach (Cell cell in board.Cells)
             {
                 cell.apply();
                 if (cell.State == State.ALIVE)
@@ -480,9 +309,8 @@ namespace GameOfLife
             if (Alive < PopMin)
                 PopMin = Alive;
             Iterations++;
+        
         }
-
-
 
         /// <summary>
         /// When user clicks with left mouse
@@ -500,9 +328,9 @@ namespace GameOfLife
                 int x = Grid.GetColumn(ClickedRectangle);
                 int y = Grid.GetRow(ClickedRectangle);
 
-                cells[x, y].State = State.ALIVE;
+                board.Cells[x, y].State = State.ALIVE;
                 Tuple<int, int> tuple = new Tuple<int, int>(x, y);
-                positionList.Add(tuple);
+                board.PositionList.Add(tuple);
             }
             isLeft = true;
 
@@ -525,13 +353,12 @@ namespace GameOfLife
                     ClickedRectangle.Fill = white;
                     int x = Grid.GetColumn(ClickedRectangle);
                     int y = Grid.GetRow(ClickedRectangle);
-                    removeItem(x, y);
+                    board.removeItem(x, y);
                 }
             }
 
             isRight = true;
         }
-
 
         /// <summary>
         /// When user releases Left Mouse 
@@ -568,9 +395,9 @@ namespace GameOfLife
                     ClickedRectangle.Fill = green;
                     int x = Grid.GetColumn(ClickedRectangle);
                     int y = Grid.GetRow(ClickedRectangle);
-                    cells[x, y].State = State.ALIVE;
+                    board.Cells[x, y].State = State.ALIVE;
                     Tuple<int, int> tuple = new Tuple<int, int>(x, y);
-                    positionList.Add(tuple);
+                    board.PositionList.Add(tuple);
                 }
                 if (isRight)
                 {
@@ -580,32 +407,11 @@ namespace GameOfLife
                         ClickedRectangle.Fill = white;
                         int x = Grid.GetColumn(ClickedRectangle);
                         int y = Grid.GetRow(ClickedRectangle);
-                        removeItem(x, y);   
+                        board.removeItem(x, y);   
                     }
                 }
             }
-
         }
-
-
-        /// <summary>
-        /// Remove cell if grid is resized
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        private void removeItem(int x,int y)
-        {
-            cells[x, y].State = State.DEAD;
-
-            foreach (Tuple<int, int> cell in positionList.ToList())
-            {
-                if (cell.Item1 >= x || cell.Item2 >= y)
-                {
-                    positionList.Remove(cell);
-                }
-            }
-        }
-
 
         /// <summary>
         /// When user stops dragging on slider
@@ -617,16 +423,12 @@ namespace GameOfLife
             
             var slider = sender as Slider;
             double value = slider.Value;
-            nbOfRowCell = (int)value;
+            board.NbOfRowCell = (int)value;
             myGrid.ColumnDefinitions.Clear();
             myGrid.RowDefinitions.Clear();
-            
-            DrawGrid();
+            board.InitBoard();
 
         }
-
-
-
 
     }
 }
