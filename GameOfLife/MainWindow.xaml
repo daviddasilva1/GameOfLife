@@ -7,7 +7,7 @@
         mc:Ignorable="d"
          ResizeMode="NoResize"
            WindowStartupLocation="CenterScreen" WindowState="Maximized"
-    Title="MainWindow" Height="800" Width="800">
+    Title="Game of Life" Height="800" Width="800">
     <StackPanel>
         <Grid Visibility="Visible" Name="myGrid" MouseRightButtonDown="Grid_MouseRightDown" MouseRightButtonUp="Grid_MouseRightUp" MouseMove="Grid_MouseMove" MouseLeftButtonUp="Grid_MouseUp" MouseLeftButtonDown="Grid_MouseLeftDown" Height="700" VerticalAlignment="Top">
 

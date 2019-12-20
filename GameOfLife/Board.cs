@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,11 +24,11 @@ namespace GameOfLife
 
         public int NbOfColumnCell { get => nbOfColumnCell; }
 
-        public int NbOfRowCell { get => nbOfRowCell; }
+        public int NbOfRowCell { get => nbOfRowCell; set => nbOfRowCell = value; }
 
 
 
-        public Cell[,] Cell { get => cells; set => cells = value; }
+        public Cell[,] Cells { get => cells; set => cells = value; }
 
 
         //all colors used on our grid
@@ -35,7 +37,6 @@ namespace GameOfLife
         private SolidColorBrush black = new SolidColorBrush(Colors.Black);
 
         private Grid grid;
-
         public Board(int nbRow,int nbCol,Grid grid)
         {
             this.nbOfRowCell = nbRow;
@@ -113,8 +114,8 @@ namespace GameOfLife
             Random random = new Random();
             for (int i = 0; i < 50; i++)
             {
-                int col = random.Next(1, 20);
-                int row = random.Next(1, 17);
+                int col = random.Next(1, nbOfColumnCell);
+                int row = random.Next(1, NbOfRowCell);
                 positionList.Add(new Tuple<int, int>(col, row));
             }
 
@@ -132,12 +133,109 @@ namespace GameOfLife
         public void resetCells()
         {
             var color = white;
-            foreach (Cell cell in cells)
+            foreach (Cell cell in Cells)
             {
                 cell.rectangle.Fill = color;
                 cell.State = State.DEAD;
             }
         }
 
+        /// <summary>
+        /// Remove cell if grid is resized
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void removeItem(int x, int y)
+        {
+            Cells[x, y].State = State.DEAD;
+
+            foreach (Tuple<int, int> cell in positionList.ToList())
+            {
+                if (cell.Item1 >= x || cell.Item2 >= y)
+                {
+                    positionList.Remove(cell);
+                }
+            }
+        }
+
+        /// <summary>
+        /// When user clicks in one of the pattern buttons
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void setPattern(object sender)
+        {
+            // Top left position of the template
+            Button btn = (Button)sender;
+            if (btn.Name == "pattern1")
+            {
+                positionList.Clear();
+                int x = 0, y = 0;
+                positionList.Add(new Tuple<int, int>(x, y + 2));
+                positionList.Add(new Tuple<int, int>(x + 1, y + 2));
+                positionList.Add(new Tuple<int, int>(x + 2, y + 2));
+                positionList.Add(new Tuple<int, int>(x + 1, y));
+                positionList.Add(new Tuple<int, int>(x + 2, y + 1));
+            }
+            else if (btn.Name == "pattern2")
+            {
+                positionList.Clear();
+                int x = NbOfColumnCell / 2 - 5, y = NbOfRowCell / 2;
+                positionList.Add(new Tuple<int, int>(x, y));
+                positionList.Add(new Tuple<int, int>(x + 1, y));
+                positionList.Add(new Tuple<int, int>(x + 2, y));
+                positionList.Add(new Tuple<int, int>(x + 3, y));
+                positionList.Add(new Tuple<int, int>(x + 4, y));
+                positionList.Add(new Tuple<int, int>(x + 5, y));
+                positionList.Add(new Tuple<int, int>(x + 6, y));
+                positionList.Add(new Tuple<int, int>(x + 7, y));
+                positionList.Add(new Tuple<int, int>(x + 8, y));
+                positionList.Add(new Tuple<int, int>(x + 9, y));
+            }
+            else
+            {
+                positionList.Clear();
+                int x = NbOfColumnCell / 2, y = NbOfRowCell / 2;
+                int xSign = 1;
+                int ySign = 1;
+                for (int i = 0; i < 4; i++)
+                {
+                    positionList.Add(new Tuple<int, int>(x + xSign * 2, y - ySign * 1));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 1));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 1));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 2));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 3));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 1, y - ySign * 4));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 2, y - ySign * 6));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 3, y - ySign * 6));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 4, y - ySign * 6));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 2));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 3));
+                    positionList.Add(new Tuple<int, int>(x + xSign * 6, y - ySign * 4));
+                    if (i == 0)
+                        xSign = -1;
+                    else if (i == 1)
+                        ySign = -1;
+                    else if (i == 2)
+                        xSign = 1;
+                }
+            }
+
+            resetCells();
+            foreach (Tuple<int, int> cell in positionList)
+            {
+                if (cell.Item1 > NbOfColumnCell || cell.Item2 > NbOfRowCell)
+                {
+
+                }
+                else
+                {
+                    Cells[cell.Item1, cell.Item2].rectangle.Fill = green;
+                    Cells[cell.Item1, cell.Item2].State = State.ALIVE;
+                }
+            }
+        }
+
     }
+
 }
