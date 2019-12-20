@@ -180,17 +180,16 @@ namespace GameOfLife
             else if (btn.Name == "pattern2")
             {
                 positionList.Clear();
-                int x = NbOfColumnCell / 2 - 5, y = NbOfRowCell / 2;
-                positionList.Add(new Tuple<int, int>(x, y));
-                positionList.Add(new Tuple<int, int>(x + 1, y));
-                positionList.Add(new Tuple<int, int>(x + 2, y));
-                positionList.Add(new Tuple<int, int>(x + 3, y));
-                positionList.Add(new Tuple<int, int>(x + 4, y));
-                positionList.Add(new Tuple<int, int>(x + 5, y));
-                positionList.Add(new Tuple<int, int>(x + 6, y));
-                positionList.Add(new Tuple<int, int>(x + 7, y));
-                positionList.Add(new Tuple<int, int>(x + 8, y));
-                positionList.Add(new Tuple<int, int>(x + 9, y));
+                int x = NbOfColumnCell / 2, y = NbOfRowCell / 2;
+                for(int i=0;i<NbOfColumnCell;i++)
+                {
+                    positionList.Add(new Tuple<int, int>(i, y-1));
+                    positionList.Add(new Tuple<int, int>(i, y));
+                    positionList.Add(new Tuple<int, int>(i, y+1));
+
+                }
+
+
             }
             else
             {
