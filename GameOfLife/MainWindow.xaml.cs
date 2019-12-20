@@ -256,8 +256,8 @@ namespace GameOfLife
             
                 {
                     board.setRandomCells();
-                    PopMin = 50;
-                    PopMax = 50;
+                    PopMin = 100;
+                    PopMax = 100;
                 }
                 startGame();
                 SetEnableButtonsStart();

@@ -112,7 +112,7 @@ namespace GameOfLife
         public void setRandomCells()
         {
             Random random = new Random();
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 100; i++)
             {
                 int col = random.Next(1, nbOfColumnCell);
                 int row = random.Next(1, NbOfRowCell);
